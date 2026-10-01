@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e16ad9fc4e59104abd0aec2b60508a8, type: 3}
+  m_Name: Animal_frog
+  m_EditorClassIdentifier: NongTrai.Runtime::NongTrai.Animals.AnimalData
+  id: frog
+  nameVi: "\u1EBEch"
+  nameEn: Frog
+  sprite: {fileID: 21300000, guid: 53c7cad29d8a9c542bdced3a87779d48, type: 3}
+  sound: {fileID: 8300000, guid: 1284fade14cc62e4891f338ae37a36ed, type: 3}
+  nameVoice: {fileID: 8300000, guid: 7d9c448b08a25fd418d27ecb05b2429e, type: 3}
+  food: {fileID: 11400000, guid: 645288ae593f0944487455f5bb6f474b, type: 2}
+  habitat: 3
+  similarGroup: 

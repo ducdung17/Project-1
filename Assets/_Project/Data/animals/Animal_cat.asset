@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e16ad9fc4e59104abd0aec2b60508a8, type: 3}
+  m_Name: Animal_cat
+  m_EditorClassIdentifier: NongTrai.Runtime::NongTrai.Animals.AnimalData
+  id: cat
+  nameVi: "M\xE8o"
+  nameEn: Cat
+  sprite: {fileID: 21300000, guid: 8f1bcde6f66d1644caa716a4ea26b8b5, type: 3}
+  sound: {fileID: 8300000, guid: 45dd1e4e6ea91474d9634f9c79d5b6b4, type: 3}
+  nameVoice: {fileID: 8300000, guid: 45066344e57825840bb8de1667efc1e8, type: 3}
+  food: {fileID: 11400000, guid: 92b0f518b5aaa6c49b199c68cbd435a8, type: 2}
+  habitat: 1
+  similarGroup: thu-nho

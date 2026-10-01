@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e16ad9fc4e59104abd0aec2b60508a8, type: 3}
+  m_Name: Animal_duck
+  m_EditorClassIdentifier: NongTrai.Runtime::NongTrai.Animals.AnimalData
+  id: duck
+  nameVi: "V\u1ECBt"
+  nameEn: Duck
+  sprite: {fileID: 21300000, guid: ba15db27b23fbbb4aae608ee07d922d6, type: 3}
+  sound: {fileID: 8300000, guid: fcc1ec4a7ebd0784b94bc8be2701ad9b, type: 3}
+  nameVoice: {fileID: 8300000, guid: 41286a90f04f4eb4e86f31e3fcea653a, type: 3}
+  food: {fileID: 11400000, guid: b62c259f26ad0a342af0d98d5f48651d, type: 2}
+  habitat: 0
+  similarGroup: gia-cam
