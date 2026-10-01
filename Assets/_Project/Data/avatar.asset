@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3e8de891ecbff94cb26c06598c42863, type: 3}
+  m_Name: avatar
+  m_EditorClassIdentifier: NongTrai.Runtime::NongTrai.Profiles.AvatarCatalog
+  avatars:
+  - displayName: bear
+    sprite: {fileID: 7935234321397735378, guid: 05cfbfd0159603c45a0e23d97d54d65f, type: 3}
+    cardColor: {r: 1, g: 0.5377359, b: 0.3726415, a: 0}
+    sound: {fileID: 0}
+  - displayName: cat
+    sprite: {fileID: 1075993247170539406, guid: f0692e9d593938d45b68fbf3e56bc32c, type: 3}
+    cardColor: {r: 0.43666366, g: 0.4026344, b: 0.9811321, a: 0}
+    sound: {fileID: 0}
+  - displayName: chick
+    sprite: {fileID: 6544188894419215680, guid: 1aaad3901a40d7a408101d9a695e438e, type: 3}
+    cardColor: {r: 0.9716981, g: 0.8294875, b: 0.42626378, a: 0}
+    sound: {fileID: 0}
+  - displayName: hippo
+    sprite: {fileID: -7609769294570050772, guid: b50c09b8af57ae948a6ac6531ed3a647, type: 3}
+    cardColor: {r: 0.6402613, g: 0.9245283, b: 0.2921858, a: 0}
+    sound: {fileID: 0}
+  - displayName: mouse
+    sprite: {fileID: 4454631428275665778, guid: 3cb1b196f84c6f94ea09c65634779662, type: 3}
+    cardColor: {r: 0.4292453, g: 1, b: 0.81442374, a: 0}
+    sound: {fileID: 0}
+  - displayName: octopus
+    sprite: {fileID: -6349360636359246829, guid: e06a12058f1b6d546826f7799d478592, type: 3}
+    cardColor: {r: 0.46257564, g: 0.66794044, b: 0.9339623, a: 0}
+    sound: {fileID: 0}
+  - displayName: rabbit
+    sprite: {fileID: -5362292703166988329, guid: 6bc55cd87c35d13458efa00a382cd0c2, type: 3}
+    cardColor: {r: 0.65378374, g: 0.3820755, b: 1, a: 0}
+    sound: {fileID: 0}
+  - displayName: tiger
+    sprite: {fileID: 9085329464345055985, guid: e60e35b8b9dd1434bad8bfc2c69515e1, type: 3}
+    cardColor: {r: 1, g: 0.41037738, b: 0.7931988, a: 0}
+    sound: {fileID: 0}

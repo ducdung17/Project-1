@@ -1,0 +1,13 @@
+{
+    "name": "NongTrai.Runtime",
+    "rootNamespace": "NongTrai",
+    "references": [
+        "Unity.TextMeshPro",
+        "UnityEngine.UI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "noEngineReferences": false
+}
