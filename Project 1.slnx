@@ -2,4 +2,5 @@
   <Project Path="NongTrai.Runtime.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="NongTrai.Tests.EditMode.csproj" />
+  <Project Path="NongTrai.Editor.csproj" />
 </Solution>

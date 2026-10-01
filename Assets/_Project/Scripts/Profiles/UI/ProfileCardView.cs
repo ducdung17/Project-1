@@ -22,6 +22,16 @@ namespace NongTrai.Profiles.UI
 
         public ChildProfile Profile => profile;
 
+        /// <summary>
+        /// Màu thẻ: pha nhạt màu của avatar với trắng để chữ đen dễ đọc.
+        /// Màu có alpha = 0 (quên kéo thanh A trong bảng màu) vẫn hiện thẻ đầy đủ.
+        /// </summary>
+        static Color CardTint(Color c)
+        {
+            c.a = 1f;
+            return Color.Lerp(Color.white, c, 0.35f);
+        }
+
         public void Bind(
             ChildProfile profile,
             AvatarCatalog.AvatarEntry avatar,
@@ -37,7 +47,7 @@ namespace NongTrai.Profiles.UI
             if (avatar != null)
             {
                 avatarImage.sprite = avatar.sprite;
-                background.color = avatar.cardColor;
+                background.color = CardTint(avatar.cardColor);
             }
 
             deleteButton.gameObject.SetActive(manageMode);

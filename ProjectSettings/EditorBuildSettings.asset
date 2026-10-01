@@ -14,6 +14,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: e04a116c39da4c342afe64ff4bb1a9e9
+  - enabled: 1
+    path: Assets/Scenes/GameSound.unity
+    guid: bd0ce68004e998b40a4a08436472b596
+  - enabled: 1
+    path: Assets/Scenes/GameShadow.unity
+    guid: c7bf9604f2ae0fc42a6e73c5ece7486a
+  - enabled: 1
+    path: Assets/Scenes/GameFood.unity
+    guid: 1e0b4afaf08862245857237460a4ee9f
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 3590b91b4603b465dbb4216d601bff33, type: 3}

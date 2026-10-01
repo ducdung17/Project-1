@@ -140,6 +140,8 @@ namespace NongTrai.Profiles.UI
                 () =>
                 {
                     Service.Remove(profile.Id);
+                    // Xóa luôn tiến độ học của bé, đúng như hộp thoại đã báo.
+                    new NongTrai.Learning.PlayerPrefsProgressStorage().Delete(profile.Id);
                     if (profile.Id == lastPlayedId)
                         lastPlayedId = null;
                 });
