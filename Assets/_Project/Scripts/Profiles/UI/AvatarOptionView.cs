@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 namespace NongTrai.Profiles.UI
 {
-    /// <summary>Một ô con vật trong hộp thoại thêm hồ sơ.</summary>
     public class AvatarOptionView : MonoBehaviour
     {
         [SerializeField] Button button;
@@ -20,7 +19,6 @@ namespace NongTrai.Profiles.UI
             AvatarId = avatarId;
             icon.sprite = entry.sprite;
 
-            // Con vật đã có bé khác dùng: làm mờ và không cho chọn.
             button.interactable = !taken;
             if (canvasGroup != null)
                 canvasGroup.alpha = taken ? takenAlpha : 1f;

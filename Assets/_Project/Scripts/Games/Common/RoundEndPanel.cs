@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 namespace NongTrai.Games
 {
-    /// <summary>Bảng chúc mừng cuối lượt: số câu đúng ngay, con vật bé vừa thuộc, nút chơi tiếp / về nhà.</summary>
     public class RoundEndPanel : MonoBehaviour
     {
         [SerializeField] TMP_Text titleText;

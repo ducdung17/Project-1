@@ -6,10 +6,6 @@ using UnityEngine.UI;
 
 namespace NongTrai.Games
 {
-    /// <summary>
-    /// Vật bé kéo đi (con vật màu trong "Tìm cái bóng", thức ăn trong "Cho bạn ăn").
-    /// Thả trúng một DropTarget thì DropTarget báo cho bộ điều khiển; thả ra ngoài thì tự bay về chỗ cũ.
-    /// </summary>
     [RequireComponent(typeof(CanvasGroup))]
     public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
@@ -25,7 +21,6 @@ namespace NongTrai.Games
 
         public bool Dragging { get; private set; }
 
-        /// <summary>Bé bắt đầu kéo (để tắt gợi ý, tính giờ...).</summary>
         public event Action DragStarted;
 
         void Awake()
@@ -33,10 +28,9 @@ namespace NongTrai.Games
             rect = (RectTransform)transform;
             group = GetComponent<CanvasGroup>();
             rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
-            home = rect.anchoredPosition; // vị trí đặt trong scene là "chỗ cũ"
+            home = rect.anchoredPosition;
         }
 
-        /// <summary>Hiện vật ở chỗ cũ với hình mới, sẵn sàng để kéo.</summary>
         public void Show(Sprite sprite)
         {
             StopMoving();
@@ -61,7 +55,7 @@ namespace NongTrai.Games
             Dragging = true;
             droppedOnTarget = false;
             StopMoving();
-            group.blocksRaycasts = false; // để thẻ bên dưới nhận được sự kiện thả
+            group.blocksRaycasts = false;
             rect.localScale = Vector3.one * 1.1f;
             DragStarted?.Invoke();
         }
@@ -81,7 +75,6 @@ namespace NongTrai.Games
                 ReturnHome();
         }
 
-        /// <summary>DropTarget gọi khi vật được thả trúng nó (chạy trước OnEndDrag).</summary>
         public void NotifyDropped() => droppedOnTarget = true;
 
         public void ReturnHome()
@@ -90,7 +83,6 @@ namespace NongTrai.Games
             Move(home, 1f, false);
         }
 
-        /// <summary>Bay vào giữa thẻ đích rồi biến mất (khi đúng).</summary>
         public void FlyInto(RectTransform target)
         {
             SetInteractable(false);
@@ -118,7 +110,7 @@ namespace NongTrai.Games
             Vector3 fromScale = rect.localScale;
             for (float t = 0; t < 1f; t += Time.unscaledDeltaTime / moveSeconds)
             {
-                float e = 1f - (1f - t) * (1f - t); // chậm dần
+                float e = 1f - (1f - t) * (1f - t);
                 rect.anchoredPosition = Vector2.LerpUnclamped(from, to, e);
                 rect.localScale = Vector3.LerpUnclamped(fromScale, Vector3.one * endScale, e);
                 yield return null;

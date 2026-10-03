@@ -4,7 +4,6 @@ using UnityEngine.EventSystems;
 
 namespace NongTrai.Games
 {
-    /// <summary>Gắn vào thẻ đáp án để nhận vật được kéo thả vào.</summary>
     public class DropTarget : MonoBehaviour, IDropHandler
     {
         public event Action<DropTarget, DraggableItem> Dropped;

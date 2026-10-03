@@ -12,18 +12,10 @@ using UnityEngine.UI;
 
 namespace NongTrai.EditorTools
 {
-    /// <summary>
-    /// Menu NongTrai > Làm đẹp giao diện:
-    /// 1) sao lưu scene + prefab vào thư mục UIBackup (ngoài Assets);
-    /// 2) đặt Mali-Bold SDF làm font mặc định và đổi mọi chữ TextMeshPro sang font này;
-    /// 3) các khung/nút "trơn" (hình vuông mặc định của Unity) được bo góc tròn;
-    /// 4) dựng lại 3 màn chơi bằng bộ nút Simple Buttons + nền nông trại.
-    /// </summary>
     public static class UiPolisher
     {
         static readonly string[] GeneratedScenes = { "GameSound", "GameShadow", "GameFood" };
 
-        [MenuItem("NongTrai/Làm đẹp giao diện (font Mali + bo góc)", priority = 40)]
         public static void PolishAll()
         {
             if (UiTheme.Font == null)
@@ -48,11 +40,9 @@ namespace NongTrai.EditorTools
                 report.AppendLine($"Sao lưu: {backup}");
                 report.AppendLine(UiTheme.SetDefaultFont() ? "Font mặc định của TextMeshPro: Mali-Bold SDF" : "Không đặt được font mặc định (thiếu TMP Settings).");
 
-                // Chuẩn bị sẵn các hình (đặt viền 9-slice) trước khi duyệt scene.
                 _ = UiTheme.RoundedBox;
                 _ = UiTheme.Card;
 
-                // Prefab do mình làm trong _Project (trừ thẻ đáp án, cái đó được dựng lại cùng màn chơi)
                 EditorUtility.DisplayProgressBar("Làm đẹp giao diện", "Prefab...", 0.1f);
                 foreach (string guid in AssetDatabase.FindAssets("t:Prefab", new[] { "Assets/_Project" }))
                 {
@@ -71,7 +61,6 @@ namespace NongTrai.EditorTools
                     }
                 }
 
-                // Các scene của bạn (Start, profile, MainMenu...) — chỉ đổi font và bo góc khung trơn
                 List<string> scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path)
                     .Where(p => !GeneratedScenes.Contains(Path.GetFileNameWithoutExtension(p))).ToList();
                 for (int i = 0; i < scenes.Count; i++)
@@ -94,7 +83,6 @@ namespace NongTrai.EditorTools
                     report.AppendLine($"Scene {Path.GetFileNameWithoutExtension(scenes[i])}: {total}");
                 }
 
-                // Dựng lại 3 màn chơi bằng giao diện mới
                 EditorUtility.DisplayProgressBar("Làm đẹp giao diện", "Dựng lại GameSound...", 0.7f);
                 report.AppendLine(SoundGameBuilder.Run(false));
                 EditorUtility.DisplayProgressBar("Làm đẹp giao diện", "Dựng lại GameShadow...", 0.8f);
@@ -115,8 +103,6 @@ namespace NongTrai.EditorTools
             Debug.Log("[UiPolisher]\n" + report);
             EditorUtility.DisplayDialog("Đã làm đẹp xong", report.ToString(), "OK");
         }
-
-        // ------------------------------------------------------------------
 
         struct Stats
         {
@@ -143,7 +129,6 @@ namespace NongTrai.EditorTools
             {
                 if (background != null && IsPlainFullScreenBackground(img, canvasSize))
                 {
-                    // Nền một màu phủ cả màn hình -> hình nền nông trại
                     img.sprite = background;
                     img.type = Image.Type.Simple;
                     img.color = Color.white;
@@ -154,7 +139,6 @@ namespace NongTrai.EditorTools
                 }
                 if (!ShouldRound(img, canvasSize, rounded, card)) continue;
                 Rect r = img.rectTransform.rect;
-                // Khung lớn (thẻ, bảng hộp thoại) dùng ui_card có bóng đổ; nút/khung nhỏ dùng ui_round.
                 bool big = Mathf.Min(r.width, r.height) >= 120f && card != null;
                 UiTheme.ApplySliced(img, big ? card : rounded);
                 stats.Rounded++;
@@ -172,24 +156,22 @@ namespace NongTrai.EditorTools
             return r.width >= canvasSize.x * 0.8f && r.height >= canvasSize.y * 0.8f;
         }
 
-        /// <summary>Chỉ bo góc các khung/nút "trơn": không có hình riêng, đủ đậm, không phải nền phủ toàn màn hình.</summary>
         static bool ShouldRound(Image img, Vector2 canvasSize, Sprite rounded, Sprite card)
         {
             if (img is null || img.GetType() != typeof(Image)) return false;
             bool ours = img.sprite != null && (img.sprite == rounded || img.sprite == card);
-            if (!ours && !UiTheme.IsBuiltinPlainSprite(img.sprite)) return false; // đã có hình riêng (nút gói, avatar...)
-            if (img.color.a < 0.6f) return false;                         // lớp mờ, lớp chặn bấm
+            if (!ours && !UiTheme.IsBuiltinPlainSprite(img.sprite)) return false;
+            if (img.color.a < 0.6f) return false;
             if (UiTheme.NameLooksLikeBackground(img.gameObject.name)) return false;
             if (img.GetComponent<Mask>() != null || img.GetComponent<RectMask2D>() != null) return false;
             if (img.GetComponentInParent<Scrollbar>(true) != null) return false;
 
             Rect r = img.rectTransform.rect;
-            if (Mathf.Min(r.width, r.height) < 12f) return false;          // đường kẻ, vạch ngăn
-            if (r.width >= canvasSize.x * 0.8f && r.height >= canvasSize.y * 0.8f) return false; // nền toàn màn hình
+            if (Mathf.Min(r.width, r.height) < 12f) return false;
+            if (r.width >= canvasSize.x * 0.8f && r.height >= canvasSize.y * 0.8f) return false;
             return true;
         }
 
-        /// <summary>Chép các scene trong Build Profiles và prefab trong _Project sang UIBackup/yyyyMMdd_HHmmss.</summary>
         static string Backup()
         {
             string projectRoot = Directory.GetParent(Application.dataPath).FullName;

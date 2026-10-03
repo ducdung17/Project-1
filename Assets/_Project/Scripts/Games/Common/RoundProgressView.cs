@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 namespace NongTrai.Games
 {
-    /// <summary>Hàng ngôi sao cho biết bé đã làm bao nhiêu câu trong lượt.</summary>
     public class RoundProgressView : MonoBehaviour
     {
         [Tooltip("Một ngôi sao mẫu (để TẮT). Script nhân bản nó.")]

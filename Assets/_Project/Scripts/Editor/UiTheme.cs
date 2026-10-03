@@ -7,25 +7,17 @@ using UnityEngine.UI;
 
 namespace NongTrai.EditorTools
 {
-    /// <summary>
-    /// Bộ "da" chung cho giao diện: font Mali-Bold SDF, nút trong gói Simple Buttons,
-    /// khung bo góc (ui_round, ui_card) và hình nền nông trại (bg_farm_soft).
-    /// </summary>
     internal static class UiTheme
     {
-        /// <summary>Màu theo số thứ tự bộ nút "Buttons Style N" (bộ bo tròn) của gói Simple Buttons.</summary>
         internal enum Tone { Purple = 1, Pink = 3, Green = 5, Turquoise = 7, LightBlue = 9, Blue = 11, Gray = 13 }
 
         const string FontName = "Mali-Bold SDF";
 
-        // Kích thước viền 9-slice (pixel trên ảnh gốc).
-        const float RoundBorder = 44f;  // ui_round 128x128
-        const float CardBorder = 48f;   // ui_card 160x160 (có bóng đổ phía dưới)
-        static readonly Vector4 BigBorder = new Vector4(100, 90, 100, 90); // Big*.png 440x240
+        const float RoundBorder = 44f;
+        const float CardBorder = 48f;
+        static readonly Vector4 BigBorder = new Vector4(100, 90, 100, 90);
 
         static TMP_FontAsset font;
-
-        // ------------------------------------------------------------------ Font
 
         internal static TMP_FontAsset Font
         {
@@ -42,20 +34,17 @@ namespace NongTrai.EditorTools
             }
         }
 
-        /// <summary>Đổi font của một chữ sang Mali-Bold. Trả về true nếu có thay đổi.</summary>
         internal static bool ApplyFont(TMP_Text text)
         {
             TMP_FontAsset f = Font;
             if (f == null || text == null || text.font == f) return false;
             text.font = f;
             text.fontSharedMaterial = f.material;
-            // Mali-Bold đã đậm sẵn; bỏ Bold giả để chữ không bị nhòe.
             text.fontStyle &= ~FontStyles.Bold;
             EditorUtility.SetDirty(text);
             return true;
         }
 
-        /// <summary>Đặt Mali-Bold làm font mặc định của TextMeshPro (chữ tạo mới sẽ tự dùng).</summary>
         internal static bool SetDefaultFont()
         {
             TMP_FontAsset f = Font;
@@ -71,8 +60,6 @@ namespace NongTrai.EditorTools
             return true;
         }
 
-        // ------------------------------------------------------------------ Hình
-
         internal static Sprite Background => SoundGameBuilder.FindSprite("bg_farm_soft");
         internal static Sprite RoundedBox => SlicedSprite("ui_round", Vector4.one * RoundBorder);
         internal static Sprite Card => SlicedSprite("ui_card", Vector4.one * CardBorder);
@@ -87,7 +74,7 @@ namespace NongTrai.EditorTools
                 case Tone.Pink: name = "BigPink"; break;
                 case Tone.Green: name = "BigGreen"; break;
                 case Tone.Turquoise: name = "BigTurquoise"; break;
-                case Tone.LightBlue: name = "BigLigthBlue"; break; // tên file trong gói viết sai chính tả
+                case Tone.LightBlue: name = "BigLigthBlue"; break;
                 case Tone.Blue: name = "BigBlue"; break;
                 case Tone.Gray: name = "BigGray"; break;
                 default: name = "BigPurple"; break;
@@ -95,7 +82,6 @@ namespace NongTrai.EditorTools
             return SlicedSprite(name, BigBorder);
         }
 
-        /// <summary>Tìm hình theo tên, đặt viền 9-slice cho nó (chỉ sửa khi khác).</summary>
         internal static Sprite SlicedSprite(string fileName, Vector4 border)
         {
             Sprite sprite = SoundGameBuilder.FindSprite(fileName);
@@ -121,10 +107,6 @@ namespace NongTrai.EditorTools
             return sprite;
         }
 
-        /// <summary>
-        /// Gắn hình 9-slice cho Image và chỉnh độ bo theo kích thước:
-        /// <paramref name="ratio"/> là bán kính góc so với cạnh ngắn (0.25 = 1/4 cạnh ngắn).
-        /// </summary>
         internal static void ApplySliced(Image img, Sprite sprite, float ratio = 0.25f, float maxRadius = 44f)
         {
             if (img == null || sprite == null) return;
@@ -141,13 +123,11 @@ namespace NongTrai.EditorTools
             if (s == null || s.border == Vector4.zero) return;
             Rect r = img.rectTransform.rect;
             float minSide = Mathf.Min(r.width, r.height);
-            if (minSide <= 1f) minSide = 100f; // phần tử do Layout tự đặt cỡ, chưa có kích thước
+            if (minSide <= 1f) minSide = 100f;
             float borderPx = Mathf.Max(s.border.y, s.border.w);
             float desired = Mathf.Clamp(minSide * ratio, 10f, maxRadius);
             img.pixelsPerUnitMultiplier = Mathf.Max(0.05f, borderPx / desired);
         }
-
-        // ------------------------------------------------------------------ Tiện ích
 
         internal static bool IsBuiltinPlainSprite(Sprite s)
         {

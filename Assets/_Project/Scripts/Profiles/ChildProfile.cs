@@ -3,14 +3,9 @@ using System.Collections.Generic;
 
 namespace NongTrai.Profiles
 {
-    /// <summary>
-    /// Hồ sơ của một bé. Chỉ lưu biệt danh + con vật đại diện,
-    /// KHÔNG lưu tên thật, ngày sinh hay thông tin cá nhân khác.
-    /// </summary>
     [Serializable]
     public class ChildProfile
     {
-        // JsonUtility chỉ serialize field public (hoặc [SerializeField]), không serialize property.
         public string id;
         public string nickname;
         public int avatarId;
@@ -32,7 +27,6 @@ namespace NongTrai.Profiles
         }
     }
 
-    /// <summary>Toàn bộ dữ liệu hồ sơ được lưu xuống bộ nhớ.</summary>
     [Serializable]
     public class ProfileData
     {

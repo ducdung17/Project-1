@@ -14,7 +14,6 @@ namespace NongTrai.Tests.EditMode
         [TearDown]
         public void TearDown()
         {
-            // ScriptableObject tạo trong test phải tự hủy, không thì rò bộ nhớ trong Editor.
             foreach (Object o in created)
                 Object.DestroyImmediate(o);
             created.Clear();
@@ -47,8 +46,6 @@ namespace NongTrai.Tests.EditMode
             Assert.IsFalse(problems.Any(p => p.Contains(text)),
                 $"Không mong đợi lỗi chứa \"{text}\", nhưng nhận được:\n- " + string.Join("\n- ", problems));
         }
-
-        // ================================================================ Tìm kiếm
 
         [Test]
         public void Get_ExistingId_ReturnsAnimal()
@@ -88,8 +85,6 @@ namespace NongTrai.Tests.EditMode
 
             Assert.IsEmpty(db.GetSimilar(fish));
         }
-
-        // ================================================================ Kiểm tra dữ liệu
 
         [Test]
         public void Validate_DuplicateId_IsReported()
@@ -134,7 +129,6 @@ namespace NongTrai.Tests.EditMode
         [Test]
         public void Validate_GroupWithOnlyOneAnimal_IsReported()
         {
-            // "gia-cam" và "gia_cam": lỗi chính tả làm mỗi nhóm chỉ còn 1 con.
             AnimalDatabase db = Database(Animal("chicken", "Gà", "gia-cam"), Animal("duck", "Vịt", "gia_cam"));
             AssertHas(db.Validate(), "chỉ có 1 con");
         }
@@ -142,7 +136,6 @@ namespace NongTrai.Tests.EditMode
         [Test]
         public void Validate_MissingAssets_AreReported()
         {
-            // Con vật tạo trong test không có hình, tiếng kêu, giọng đọc, thức ăn.
             List<string> problems = Database(Animal("cat", "Mèo")).Validate();
 
             AssertHas(problems, "thiếu hình");
@@ -151,12 +144,6 @@ namespace NongTrai.Tests.EditMode
             AssertHas(problems, "chưa chọn thức ăn");
         }
 
-        // ================================================================ Dữ liệu thật trong project
-
-        /// <summary>
-        /// Kiểm tra file AnimalDatabase THẬT bạn đã nhập trong Unity.
-        /// Quên kéo hình, gõ trùng Id, quên chọn thức ăn... test này sẽ đỏ và liệt kê từng lỗi.
-        /// </summary>
         [Test]
         public void RealDatabase_HasNoProblems()
         {

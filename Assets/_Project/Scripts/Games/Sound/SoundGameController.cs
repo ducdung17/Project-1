@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NongTrai.Animals;
 using NongTrai.Learning;
+using NongTrai.Online;
 using NongTrai.Profiles;
 using NongTrai.UI;
 using TMPro;
@@ -12,12 +13,6 @@ using UnityEngine.UI;
 
 namespace NongTrai.Games.Sound
 {
-    /// <summary>
-    /// Trò "Ai kêu thế nhỉ?": nghe tiếng kêu, bấm đúng con vật.
-    /// - Câu hỏi do LearningService chọn: con bé chưa thuộc được hỏi nhiều hơn, độ khó tự đổi.
-    /// - Sai không bị phạt: thẻ sai mờ đi, thẻ đúng lắc lư gợi ý, bé chọn lại.
-    /// - Ngồi lâu không chọn: tự phát lại tiếng kêu rồi gợi ý.
-    /// </summary>
     public class SoundGameController : MonoBehaviour
     {
         [Header("Dữ liệu")]
@@ -58,6 +53,7 @@ namespace NongTrai.Games.Sound
         float questionStart;
         Coroutine idleRoutine;
         HashSet<string> masteredAtStart;
+        SessionRecorder recorder;
 
         void Start()
         {
@@ -92,6 +88,7 @@ namespace NongTrai.Games.Sound
             endPanel.Hide();
             questionIndex = 0;
             perfectCount = 0;
+            recorder = new SessionRecorder("sound", ProfileManager.Current);
             masteredAtStart = new HashSet<string>(database.All.Where(a => a != null && learning.IsMastered(a.Id)).Select(a => a.Id));
             progressView.Build(questionsPerRound);
             ShowNextQuestion();
@@ -131,6 +128,7 @@ namespace NongTrai.Games.Sound
 
             float seconds = Time.realtimeSinceStartup - questionStart;
             bool correct = learning.RecordAnswer(current, card.Animal.Id, seconds, firstTry);
+            recorder?.Add(current.Target.Id, card.Animal.Id, firstTry, seconds);
 
             if (correct)
             {
@@ -161,7 +159,7 @@ namespace NongTrai.Games.Sound
         IEnumerator AfterCorrect(bool perfect)
         {
             yield return new WaitForSecondsRealtime(0.5f);
-            UiAudio.PlayVoice(current.Target.NameVoice); // "Con mèo!"
+            UiAudio.PlayVoice(current.Target.NameVoice);
             progressView.Fill(questionIndex, perfect);
             questionIndex++;
 
@@ -173,6 +171,9 @@ namespace NongTrai.Games.Sound
 
         void EndRound()
         {
+            recorder?.Finish(learning, database);
+            recorder = null;
+
             foreach (OptionCardView c in cards) Destroy(c.gameObject);
             cards.Clear();
 
@@ -190,8 +191,6 @@ namespace NongTrai.Games.Sound
             OptionCardView target = cards.FirstOrDefault(c => c.Animal == current.Target);
             if (target != null) target.StartHint();
         }
-
-        // ------------------------------------------------------------ Chờ lâu thì nhắc
 
         void RestartIdleTimer(bool introFirst, bool replayNow = true)
         {
@@ -216,7 +215,7 @@ namespace NongTrai.Games.Sound
                 }
                 yield return new WaitForSecondsRealtime(0.3f);
                 PlayAnimalSound();
-                questionStart = Time.realtimeSinceStartup; // tính giờ từ lúc bé nghe tiếng kêu
+                questionStart = Time.realtimeSinceStartup;
             }
 
             yield return new WaitForSecondsRealtime(idleSeconds);

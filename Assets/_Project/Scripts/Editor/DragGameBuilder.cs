@@ -10,13 +10,8 @@ using B = NongTrai.EditorTools.SoundGameBuilder;
 
 namespace NongTrai.EditorTools
 {
-    /// <summary>
-    /// Menu NongTrai > Tạo màn "Tìm cái bóng" / "Cho bạn ăn": dựng scene kéo thả, nối tham chiếu,
-    /// thêm vào Build Profiles và nối ô tương ứng ở MainMenu (tìm ô theo dòng chữ trên ô).
-    /// </summary>
     public static class DragGameBuilder
     {
-        [MenuItem("NongTrai/Tạo màn Tìm cái bóng (GameShadow)", priority = 2)]
         public static void BuildShadow() => RunShadow(true);
 
         internal static string RunShadow(bool interactive)
@@ -35,7 +30,6 @@ namespace NongTrai.EditorTools
             });
         }
 
-        [MenuItem("NongTrai/Tạo màn Cho bạn ăn (GameFood)", priority = 3)]
         public static void BuildFood() => RunFood(true);
 
         internal static string RunFood(bool interactive)
@@ -105,10 +99,8 @@ namespace NongTrai.EditorTools
 
             B.BuildHeader(canvas, spec.Title, spec.Tone, pop, out Button home, out RoundProgressView progressView);
 
-            // Chỗ đặt vật để kéo
             RectTransform tray = B.NewUI("Tray", canvas);
             B.Place(tray, new Vector2(0.5f, 0.5f), new Vector2(0, 185), new Vector2(300, 300));
-            // Khay tròn: viền trắng + lòng màu nhạt (ui_round kéo bo góc thành hình tròn)
             Sprite round = UiTheme.RoundedBox;
             Image trayImage = B.AddImage(tray, Color.white, round != null ? round : B.Knob, false);
             UiTheme.FitCorners(trayImage, 0.5f, 1000f);
@@ -119,12 +111,10 @@ namespace NongTrai.EditorTools
 
             B.Pill(canvas, "HintText", new Vector2(0.5f, 0.5f), new Vector2(0, 0), new Vector2(720, 64), spec.Hint, 30, spec.Ink);
 
-            // Hàng thẻ đáp án (cái bóng / con vật)
             RectTransform options = B.NewUI("Options", canvas);
             B.Place(options, new Vector2(0.5f, 0.5f), new Vector2(0, -240), new Vector2(1760, 340));
             B.ConfigureRow(options.gameObject.AddComponent<HorizontalLayoutGroup>(), 50, TextAnchor.MiddleCenter);
 
-            // Vật để kéo: tạo SAU hàng thẻ để luôn vẽ đè lên trên khi kéo qua
             RectTransform item = B.NewUI("DragItem", canvas);
             B.Place(item, new Vector2(0.5f, 0.5f), new Vector2(0, 185), new Vector2(230, 230));
             Image itemImage = B.AddImage(item, Color.white, null, true);
@@ -137,7 +127,7 @@ namespace NongTrai.EditorTools
             MasteryDebugPanel debugPanel = B.BuildDebugPanel(canvas);
 
             DragMatchGameController controller = canvas.gameObject.AddComponent<DragMatchGameController>();
-            B.Set(controller, "database", B.FindByType<AnimalDatabase>()); // nạp lại sau khi đổi scene
+            B.Set(controller, "database", B.FindByType<AnimalDatabase>());
             SetEnum(controller, "mode", (int)spec.Mode);
             B.Set(controller, "optionsContainer", options);
             B.Set(controller, "optionPrefab", cardPrefab);

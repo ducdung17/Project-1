@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 namespace NongTrai.Profiles.UI
 {
-    /// <summary>Một thẻ hồ sơ: con vật + biệt danh, và nút xóa (chỉ hiện ở chế độ quản lý).</summary>
     public class ProfileCardView : MonoBehaviour
     {
         [SerializeField] Button cardButton;
@@ -22,10 +21,6 @@ namespace NongTrai.Profiles.UI
 
         public ChildProfile Profile => profile;
 
-        /// <summary>
-        /// Màu thẻ: pha nhạt màu của avatar với trắng để chữ đen dễ đọc.
-        /// Màu có alpha = 0 (quên kéo thanh A trong bảng màu) vẫn hiện thẻ đầy đủ.
-        /// </summary>
         static Color CardTint(Color c)
         {
             c.a = 1f;
@@ -54,7 +49,6 @@ namespace NongTrai.Profiles.UI
             if (lastPlayedMark != null)
                 lastPlayedMark.SetActive(isLastPlayed && !manageMode);
 
-            // Xóa listener cũ trước khi gắn mới, tránh bấm một lần mà gọi nhiều lần.
             cardButton.onClick.RemoveAllListeners();
             cardButton.onClick.AddListener(() =>
             {

@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 namespace NongTrai.UI
 {
-    /// <summary>Gắn vào một Button: bấm là chuyển sang scene đã điền (ví dụ nút về màn hình chính).</summary>
     [RequireComponent(typeof(Button))]
     public class LoadSceneButton : MonoBehaviour
     {

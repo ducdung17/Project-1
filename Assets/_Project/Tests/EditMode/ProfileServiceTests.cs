@@ -5,10 +5,9 @@ using NongTrai.Profiles;
 
 namespace NongTrai.Tests.EditMode
 {
-    /// <summary>Lưu hồ sơ trong RAM, chỉ dùng cho test. Đếm số lần Save để kiểm tra dữ liệu có được lưu.</summary>
     public class InMemoryProfileStorage : IProfileStorage
     {
-        string json; // Lưu dạng JSON để mô phỏng đúng việc ghi/đọc thật (tạo object mới mỗi lần Load).
+        string json;
         public int SaveCount { get; private set; }
 
         public ProfileData Load()
@@ -41,15 +40,12 @@ namespace NongTrai.Tests.EditMode
 
         ProfileService CreateService()
         {
-            // Id cố định (p1, p2...) và thời gian cố định để test luôn cho cùng kết quả.
             return new ProfileService(
                 storage,
                 AvatarCount,
                 () => "p" + (++nextId),
                 () => new DateTime(2026, 10, 1, 0, 0, 0, DateTimeKind.Utc));
         }
-
-        // ================================================================ Thêm
 
         [Test]
         public void Add_ValidProfile_Succeeds()
@@ -103,7 +99,6 @@ namespace NongTrai.Tests.EditMode
         [Test]
         public void Add_SameVietnameseNameDifferentUnicodeForm_IsDuplicate()
         {
-            // "Bé" dựng sẵn (NFC) và "Be" + dấu sắc rời (NFD) nhìn giống nhau nhưng khác byte.
             string composed = "Bé";
             string decomposed = "Bé";
             service.Add(composed, 0);
@@ -141,7 +136,7 @@ namespace NongTrai.Tests.EditMode
             service.ProfilesChanged += () => calls++;
 
             service.Add("Bin", 0);
-            service.Add("", 1); // thất bại -> không bắn sự kiện
+            service.Add("", 1);
 
             Assert.AreEqual(1, calls);
         }
@@ -157,8 +152,6 @@ namespace NongTrai.Tests.EditMode
             Assert.AreEqual("Bin", reloaded.Profiles[0].Nickname);
             Assert.AreEqual(2, reloaded.Profiles[0].AvatarId);
         }
-
-        // ================================================================ Xóa
 
         [Test]
         public void Remove_ExistingProfile_Succeeds()
@@ -212,8 +205,6 @@ namespace NongTrai.Tests.EditMode
             Assert.AreEqual(bin.Id, service.SelectedProfile.Id);
         }
 
-        // ================================================================ Chọn
-
         [Test]
         public void Select_ExistingProfile_SetsSelectedAndRaisesEvent()
         {
@@ -257,8 +248,6 @@ namespace NongTrai.Tests.EditMode
             Assert.IsNull(service.SelectedProfile);
             Assert.IsNull(CreateService().SelectedProfile);
         }
-
-        // ================================================================ Tải dữ liệu
 
         [Test]
         public void Load_WithStaleSelectedId_ClearsIt()

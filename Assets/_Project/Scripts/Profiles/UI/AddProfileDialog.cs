@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 namespace NongTrai.Profiles.UI
 {
-    /// <summary>Hộp thoại thêm bé mới: chọn con vật đại diện + nhập biệt danh.</summary>
     public class AddProfileDialog : MonoBehaviour
     {
         [SerializeField] Transform avatarGrid;
@@ -20,7 +19,6 @@ namespace NongTrai.Profiles.UI
         int selectedAvatarId = -1;
         bool initialized;
 
-        // Không dùng Awake: hộp thoại để ẩn sẵn trong scene nên Awake chỉ chạy khi mở lần đầu.
         void EnsureInitialized()
         {
             if (initialized) return;
@@ -29,7 +27,7 @@ namespace NongTrai.Profiles.UI
             cancelButton.onClick.AddListener(Close);
             nameInput.characterLimit = ProfileService.MaxNameLength;
             nameInput.onValueChanged.AddListener(_ => ShowError(string.Empty));
-            nameInput.onSubmit.AddListener(_ => OnSave()); // Enter để lưu
+            nameInput.onSubmit.AddListener(_ => OnSave());
         }
 
         public void Open(ProfileService profileService, AvatarCatalog catalog)
@@ -41,7 +39,6 @@ namespace NongTrai.Profiles.UI
             ShowError(string.Empty);
             BuildAvatarGrid(catalog);
 
-            // Chọn sẵn con vật đầu tiên còn trống để phụ huynh chỉ cần gõ tên.
             selectedAvatarId = -1;
             for (int i = 0; i < catalog.Count; i++)
             {

@@ -4,10 +4,6 @@ using System.Linq;
 
 namespace NongTrai.Profiles
 {
-    /// <summary>
-    /// Câu hỏi "cổng phụ huynh": một phép cộng mà người lớn giải trong 2 giây,
-    /// còn trẻ mầm non chưa làm được. Logic thuần C# để unit test được.
-    /// </summary>
     public class ParentGateChallenge
     {
         public int A { get; }
@@ -26,13 +22,11 @@ namespace NongTrai.Profiles
 
         public bool Check(int chosen) => chosen == Answer;
 
-        /// <param name="optionCount">Số đáp án hiển thị (gồm cả đáp án đúng).</param>
         public static ParentGateChallenge Generate(Random random, int optionCount = 3)
         {
             if (random == null) throw new ArgumentNullException(nameof(random));
             if (optionCount < 2) throw new ArgumentOutOfRangeException(nameof(optionCount));
 
-            // Cả hai số từ 3..9 và tổng >= 10 để phải "nhớ", trẻ nhỏ khó đoán mò.
             int a, b;
             do
             {

@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nông Trại Của Bé – Trang phụ huynh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&family=Be+Vietnam+Pro:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --ink: #1F2A24; --muted: #4A5A51; --faint: #5B6B62; --line: #DDE3DC;
+    --green: #2F7D32; --green-light: #C9DFC9; --orange: #A65400;
+    --display: Mali, "Comic Sans MS", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #FFFFFF; color: var(--ink);
+         font-family: "Be Vietnam Pro", system-ui, sans-serif; font-size: 15px; line-height: 1.5; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 32px 64px; display: flex; flex-direction: column; gap: 40px; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .brand { font-family: var(--display); font-weight: 700; font-size: 20px; color: var(--green); }
+  nav { display: flex; gap: 4px; flex-wrap: wrap; }
+  nav button { font: inherit; min-height: 44px; padding: 8px 16px; border-radius: 999px; border: none;
+               background: transparent; color: var(--muted); cursor: pointer; }
+  nav button[aria-pressed="true"] { background: var(--ink); color: #FFFFFF; font-weight: 600; }
+  nav button:focus-visible { outline: 3px solid var(--green); outline-offset: 2px; }
+  h1 { margin: 0; font-family: var(--display); font-weight: 700; font-size: 36px; line-height: 1.2; }
+  h2 { margin: 0; font-size: 17px; font-weight: 600; }
+  .sub { margin: 8px 0 0; font-size: 17px; color: var(--muted); }
+  .nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  .num b { display: block; font-family: var(--display); font-weight: 700; font-size: 44px; line-height: 1.1; }
+  .num span { color: var(--muted); }
+  .chart { height: 160px; display: flex; align-items: flex-end; gap: 10px; border-bottom: 1px solid var(--line); margin-top: 16px; }
+  .bar { flex: 1 1 0; border-radius: 4px 4px 0 0; background: var(--green-light); min-height: 2px; position: relative; }
+  .bar.recent { background: var(--green); }
+  .bar.empty { background: transparent; border-bottom: 2px dotted var(--line); }
+  .axis { display: flex; justify-content: space-between; font-size: 13px; color: var(--faint); margin-top: 8px; }
+  .cols { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 48px; align-items: start; }
+  .animals { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
+  .animal { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .animal img { width: 56px; height: 56px; object-fit: contain; }
+  .animal.learning img { opacity: 0.55; }
+  .animal .pct { font-size: 13px; font-weight: 600; color: var(--green); }
+  .animal.learning .pct { color: var(--orange); }
+  .practice p { margin: 12px 0 0; }
+  .practice .tip { color: var(--muted); }
+  footer { font-size: 13px; color: var(--faint); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .notice { padding: 16px; border-radius: 12px; background: #FFF4E5; color: #5A3A10; }
+  a { color: var(--green); }
+  [hidden] { display: none !important; }
+  @media (max-width: 760px) {
+    .wrap { padding: 20px 20px 40px; gap: 28px; }
+    h1 { font-size: 28px; }
+    .nums { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    .num { display: flex; align-items: baseline; gap: 12px; }
+    .num b { font-size: 36px; min-width: 96px; }
+    .chart { height: 120px; gap: 5px; }
+    .axis { flex-wrap: wrap; }
+    .axis .legend { order: 3; width: 100%; }
+    .cols { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .animals { gap: 12px; }
+    .animal img { width: 48px; height: 48px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand">Nông Trại Của Bé</span>
+    <nav id="kids" aria-label="Chọn bé"></nav>
+  </header>
+
+  <div id="error" class="notice" hidden></div>
+  <div id="empty" class="notice" hidden>Chưa có dữ liệu. Hãy cho bé chơi một lượt trong game, trang sẽ tự cập nhật.</div>
+
+  <main id="content" hidden style="display: flex; flex-direction: column; gap: 40px">
+    <section>
+      <h1 id="headline">…</h1>
+      <p class="sub">14 ngày qua · tự cập nhật sau mỗi lượt chơi</p>
+    </section>
+
+    <section class="nums" aria-label="Số liệu chính">
+      <div class="num"><b id="mastered">–</b><span>con vật đã thuộc</span></div>
+      <div class="num"><b id="week" style="color: var(--green)">–</b><span id="weekLabel">đúng ngay lần đầu tuần này</span></div>
+      <div class="num"><b id="sessions">–</b><span>lượt chơi</span></div>
+    </section>
+
+    <section>
+      <h2>Đúng ngay lần đầu, theo ngày</h2>
+      <div id="chart" class="chart" role="img" aria-label="Biểu đồ tỉ lệ đúng ngay lần đầu 14 ngày"></div>
+      <div class="axis"><span id="axisFrom"></span><span class="legend">nhạt: tuần trước · đậm: 7 ngày gần nhất</span><span id="axisTo"></span></div>
+    </section>
+
+    <div class="cols">
+      <section>
+        <h2>Mức thuộc</h2>
+        <div id="animals" class="animals"></div>
+      </section>
+      <section class="practice">
+        <h2>Cần luyện thêm</h2>
+        <p id="confusion"></p>
+        <p id="tip" class="tip"></p>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <span id="updated"></span>
+    <a href="/swagger">API (Swagger)</a>
+  </footer>
+</div>
+
+<script>
+const ANIMALS = [
+  { id: 'frog', name: 'Ếch' }, { id: 'duck', name: 'Vịt' }, { id: 'pig', name: 'Lợn' }, { id: 'chicken', name: 'Gà' },
+  { id: 'sheep', name: 'Cừu' }, { id: 'cow', name: 'Bò' }, { id: 'cat', name: 'Mèo' }, { id: 'dog', name: 'Chó' },
+];
+const NAME = Object.fromEntries(ANIMALS.map(a => [a.id, a.name]));
+const MASTERED = 0.8;
+const REFRESH_MS = 15000;
+
+const $ = id => document.getElementById(id);
+let kids = [];
+let selectedId = new URLSearchParams(location.search).get('child');
+
+async function getJson(url) {
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`${url} trả về ${res.status}`);
+  return res.json();
+}
+
+function pct(x) { return Math.round(x * 100) + '%'; }
+function dayLabel(iso) { const [, m, d] = iso.split('-'); return `${Number(d)}/${Number(m)}`; }
+
+function accuracyOf(days) {
+  const answers = days.reduce((s, d) => s + d.answers, 0);
+  if (answers === 0) return null;
+  return days.reduce((s, d) => s + d.accuracy * d.answers, 0) / answers;
+}
+
+function renderKids() {
+  const nav = $('kids');
+  nav.replaceChildren(...kids.map(k => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = k.nickname;
+    b.setAttribute('aria-pressed', String(k.id === selectedId));
+    b.addEventListener('click', () => {
+      selectedId = k.id;
+      history.replaceState(null, '', '?child=' + encodeURIComponent(k.id));
+      renderKids();
+      loadSummary();
+    });
+    return b;
+  }));
+}
+
+function renderSummary(s) {
+  const days = s.last14Days;
+  const before = accuracyOf(days.slice(0, 7));
+  const recent = accuracyOf(days.slice(7));
+  const mastery = Object.fromEntries(s.mastery.map(m => [m.animalId, m.score]));
+  const masteredCount = ANIMALS.filter(a => (mastery[a.id] ?? 0) >= MASTERED).length;
+
+  let headline = `${s.nickname} đang giữ phong độ`;
+  if (s.sessionCount === 0) headline = `${s.nickname} chưa chơi lượt nào`;
+  else if (recent !== null && before !== null && recent - before >= 0.05) headline = `${s.nickname} đang tiến bộ tốt`;
+  else if (recent !== null && before !== null && before - recent >= 0.05) headline = `${s.nickname} cần luyện thêm một chút`;
+  $('headline').textContent = headline;
+
+  $('mastered').textContent = `${masteredCount}/${ANIMALS.length}`;
+  $('sessions').textContent = s.sessionCount;
+  $('week').textContent = recent === null ? '–' : pct(recent);
+  $('weekLabel').textContent = before === null
+    ? 'đúng ngay lần đầu tuần này'
+    : `đúng ngay lần đầu tuần này (tuần trước ${pct(before)})`;
+
+  $('chart').replaceChildren(...days.map((d, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'bar' + (i >= 7 ? ' recent' : '') + (d.answers === 0 ? ' empty' : '');
+    bar.style.height = d.answers === 0 ? '0' : Math.max(4, Math.round(d.accuracy * 100)) + '%';
+    bar.title = d.answers === 0 ? `${dayLabel(d.day)}: không chơi` : `${dayLabel(d.day)}: ${pct(d.accuracy)} · ${d.sessions} lượt`;
+    return bar;
+  }));
+  $('axisFrom').textContent = dayLabel(days[0].day);
+  $('axisTo').textContent = dayLabel(days[days.length - 1].day);
+
+  $('animals').replaceChildren(...ANIMALS.map(a => {
+    const score = mastery[a.id] ?? 0;
+    const div = document.createElement('div');
+    div.className = 'animal' + (score >= MASTERED ? '' : ' learning');
+    const img = document.createElement('img');
+    img.src = `img/${a.id}.png`; img.alt = '';
+    const name = document.createElement('span'); name.textContent = a.name;
+    const p = document.createElement('span'); p.className = 'pct'; p.textContent = pct(score);
+    div.append(img, name, p);
+    return div;
+  }));
+
+  const pairs = {};
+  for (const c of s.topConfusions) {
+    const key = [c.animalId, c.chosenId].sort().join('|');
+    pairs[key] = (pairs[key] || 0) + c.count;
+  }
+  const top = Object.entries(pairs).sort((x, y) => y[1] - x[1])[0];
+  const weakest = ANIMALS.filter(a => (mastery[a.id] ?? 0) < MASTERED)
+                         .sort((x, y) => (mastery[x.id] ?? 0) - (mastery[y.id] ?? 0));
+  const confusion = $('confusion'), tip = $('tip');
+  confusion.replaceChildren(); tip.textContent = '';
+  if (top) {
+    const [a, b] = top[0].split('|').map(id => NAME[id] ?? id);
+    confusion.append('Bé hay nhầm ', bold(a.toLowerCase()), ' với ', bold(b.toLowerCase()), ` (${top[1]} lần).`);
+    tip.textContent = `Gợi ý: chơi “Ai kêu thế nhỉ?” cùng bé và bắt chước tiếng kêu của ${a.toLowerCase()} và ${b.toLowerCase()}.`;
+  } else if (weakest.length) {
+    confusion.append('Bé còn đang học: ', weakest.slice(0, 3).map(a => a.name.toLowerCase()).join(', '), '.');
+  } else {
+    confusion.textContent = 'Bé đã thuộc hết 8 con vật. Tuyệt vời!';
+  }
+}
+
+function bold(text) { const b = document.createElement('strong'); b.textContent = text; return b; }
+
+async function loadSummary() {
+  if (!selectedId) return;
+  try {
+    const s = await getJson(`/api/children/${encodeURIComponent(selectedId)}/summary`);
+    renderSummary(s);
+    $('error').hidden = true;
+    $('content').hidden = false;
+    $('updated').textContent = 'Cập nhật lúc ' + new Date().toLocaleTimeString('vi-VN');
+  } catch (e) {
+    showError(e);
+  }
+}
+
+async function loadAll() {
+  try {
+    kids = await getJson('/api/children');
+    $('error').hidden = true;
+    $('empty').hidden = kids.length > 0;
+    if (kids.length === 0) { $('content').hidden = true; $('kids').replaceChildren(); return; }
+    if (!kids.some(k => k.id === selectedId)) selectedId = kids[0].id;
+    renderKids();
+    await loadSummary();
+  } catch (e) {
+    showError(e);
+  }
+}
+
+function showError(e) {
+  console.error(e);
+  $('error').textContent = 'Không lấy được dữ liệu từ server. Kiểm tra server còn chạy không (0_bat_demo.bat).';
+  $('error').hidden = false;
+}
+
+loadAll();
+setInterval(loadAll, REFRESH_MS);
+</script>
+</body>
+</html>

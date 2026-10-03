@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NongTrai.Animals;
 using NongTrai.Learning;
+using NongTrai.Online;
 using NongTrai.Profiles;
 using NongTrai.UI;
 using UnityEngine;
@@ -13,16 +14,10 @@ namespace NongTrai.Games
 {
     public enum MatchMode
     {
-        /// <summary>"Tìm cái bóng": kéo con vật màu vào đúng cái bóng của nó.</summary>
         Shadow,
-        /// <summary>"Cho bạn ăn": kéo thức ăn tới đúng con vật ăn món đó.</summary>
         Food
     }
 
-    /// <summary>
-    /// Bộ điều khiển chung cho 2 trò kéo thả. Dùng cùng hệ thống học thích ứng với "Ai kêu thế nhỉ?".
-    /// Bé có thể KÉO vật vào thẻ, hoặc BẤM thẳng vào thẻ (cho bé chưa quen kéo chuột).
-    /// </summary>
     public class DragMatchGameController : MonoBehaviour
     {
         [Header("Dữ liệu")]
@@ -64,6 +59,7 @@ namespace NongTrai.Games
         float questionStart;
         Coroutine hintRoutine;
         HashSet<string> masteredAtStart;
+        SessionRecorder recorder;
 
         void Start()
         {
@@ -98,6 +94,7 @@ namespace NongTrai.Games
             endPanel.Hide();
             questionIndex = 0;
             perfectCount = 0;
+            recorder = new SessionRecorder(mode == MatchMode.Shadow ? "shadow" : "food", ProfileManager.Current);
             masteredAtStart = new HashSet<string>(database.All.Where(a => a != null && learning.IsMastered(a.Id)).Select(a => a.Id));
             progressView.Build(questionsPerRound);
             if (promptVoice != null) UiAudio.PlayVoice(promptVoice);
@@ -109,8 +106,6 @@ namespace NongTrai.Games
             if (mode == MatchMode.Shadow)
                 return learning.NextQuestion();
 
-            // "Cho bạn ăn": con nhiễu không được ăn cùng món với con đúng (bò và cừu cùng ăn cỏ),
-            // nếu không bé thả đúng mà vẫn bị báo sai.
             for (int attempt = 0; attempt < 20; attempt++)
             {
                 Question q = learning.NextQuestion((target, other) =>
@@ -145,14 +140,11 @@ namespace NongTrai.Games
             Sprite itemSprite = mode == MatchMode.Shadow ? current.Target.Sprite : current.Target.Food?.Sprite;
             dragItem.Show(itemSprite);
 
-            // "Tìm cái bóng": phát tiếng kêu của con đang cầm để bé vừa nhìn vừa nghe.
             if (mode == MatchMode.Shadow) PlayTargetSound(0.4f);
 
             if (debugPanel != null) debugPanel.Show(current);
             RestartHintTimer();
         }
-
-        // ------------------------------------------------------------ Bé chọn (kéo thả hoặc bấm)
 
         void OnDropped(DropTarget target, DraggableItem item) => Choose(target.Card, fromDrag: true);
 
@@ -169,6 +161,7 @@ namespace NongTrai.Games
 
             float seconds = Time.realtimeSinceStartup - questionStart;
             bool correct = learning.RecordAnswer(current, card.Animal.Id, seconds, firstTry);
+            recorder?.Add(current.Target.Id, card.Animal.Id, firstTry, seconds);
 
             if (correct)
             {
@@ -180,7 +173,7 @@ namespace NongTrai.Games
                     if (c != card) c.StopEffect();
                 }
                 dragItem.FlyInto(card.Rect);
-                card.SetSilhouette(false); // bóng "hiện màu" thành con vật thật
+                card.SetSilhouette(false);
                 card.PlayCorrect();
                 UiAudio.Play(correctSound);
                 if (firstTry) perfectCount++;
@@ -201,9 +194,9 @@ namespace NongTrai.Games
         IEnumerator AfterCorrect(bool perfect)
         {
             yield return new WaitForSecondsRealtime(0.4f);
-            PlayTargetSound(0f);                                  // tiếng kêu
+            PlayTargetSound(0f);
             yield return new WaitForSecondsRealtime(0.9f);
-            UiAudio.PlayVoice(current.Target.NameVoice);          // "Con mèo!"
+            UiAudio.PlayVoice(current.Target.NameVoice);
             progressView.Fill(questionIndex, perfect);
             questionIndex++;
 
@@ -215,6 +208,9 @@ namespace NongTrai.Games
 
         void EndRound()
         {
+            recorder?.Finish(learning, database);
+            recorder = null;
+
             foreach (OptionCardView c in cards) Destroy(c.gameObject);
             cards.Clear();
             dragItem.gameObject.SetActive(false);

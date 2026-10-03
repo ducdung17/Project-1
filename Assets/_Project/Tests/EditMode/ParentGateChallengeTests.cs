@@ -7,7 +7,6 @@ namespace NongTrai.Tests.EditMode
 {
     public class ParentGateChallengeTests
     {
-        // Chạy nhiều seed để chắc chắn tính chất đúng với mọi câu hỏi được sinh ra.
         static readonly int[] Seeds = Enumerable.Range(0, 200).ToArray();
 
         [TestCaseSource(nameof(Seeds))]

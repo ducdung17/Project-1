@@ -18,10 +18,6 @@ using Object = UnityEngine.Object;
 
 namespace NongTrai.EditorTools
 {
-    /// <summary>
-    /// Menu NongTrai > Tạo màn "Ai kêu thế nhỉ?": tự dựng toàn bộ scene GameSound, prefab thẻ đáp án,
-    /// nối mọi tham chiếu, thêm scene vào Build Profiles và nối ô trò chơi ở MainMenu.
-    /// </summary>
     public static class SoundGameBuilder
     {
         const string SceneName = "GameSound";
@@ -36,11 +32,8 @@ namespace NongTrai.EditorTools
         internal static Sprite rounded;
         internal static Sprite knob;
 
-        // =====================================================================
-        [MenuItem("NongTrai/Tạo màn Ai kêu thế nhỉ (GameSound)", priority = 1)]
         public static void Build() => Run(true);
 
-        /// <summary>Dựng màn GameSound. interactive = false: không hỏi, không hiện hộp thoại (dùng khi làm đẹp hàng loạt).</summary>
         internal static string Run(bool interactive)
         {
             AnimalDatabase db = FindByType<AnimalDatabase>();
@@ -51,7 +44,6 @@ namespace NongTrai.EditorTools
                         "Chưa tìm thấy file AnimalDatabase trong project.\nHãy làm Bước 5 trong tài liệu trước.", "OK");
                 return "GameSound: thiếu AnimalDatabase, bỏ qua.";
             }
-            // Đặt scene mới cạnh scene MainMenu, prefab vào thư mục prefab có sẵn của project.
             string mainMenuPath = FindScenePath("MainMenu");
             string sceneFolder = mainMenuPath != null
                 ? Path.GetDirectoryName(mainMenuPath).Replace('\\', '/')
@@ -68,7 +60,6 @@ namespace NongTrai.EditorTools
                     return null;
             }
 
-            // Nối ô trò chơi ở MainMenu trước (mở MainMenu, sửa, lưu), đồng thời đọc tên scene hồ sơ đang dùng.
             string menuResult = ConnectMainMenu(mainMenuPath, out string profileSceneName);
 
             LoadSkin();
@@ -82,10 +73,8 @@ namespace NongTrai.EditorTools
             CreateEventSystem();
             RectTransform canvas = CreateCanvas();
 
-            // Nền, nút về nhà, tiêu đề, hàng ngôi sao
             BuildHeader(canvas, "Ai kêu thế nhỉ?", UiTheme.Tone.Pink, pop, out Button home, out RoundProgressView progressView);
 
-            // Nút loa (nghe lại): dùng nút loa hồng của gói Simple Buttons
             Sprite speakerButton = UiTheme.RoundSpeaker(UiTheme.Tone.Pink);
             Button replay = speakerButton != null
                 ? MakeButton(canvas, "ReplayButton", new Vector2(0.5f, 0.5f), new Vector2(0, 190), new Vector2(260, 260),
@@ -94,20 +83,15 @@ namespace NongTrai.EditorTools
                     Coral, knob, speakerIcon, speakerIcon == null ? "Nghe" : null, 48, CoralInk, null);
             Pill(canvas, "ReplayHint", new Vector2(0.5f, 0.5f), new Vector2(0, 25), new Vector2(460, 64), "Bấm loa để nghe lại", 30, Ink);
 
-            // Hàng thẻ đáp án
             RectTransform options = NewUI("Options", canvas);
             Place(options, new Vector2(0.5f, 0.5f), new Vector2(0, -230), new Vector2(1760, 340));
             ConfigureRow(options.gameObject.AddComponent<HorizontalLayoutGroup>(), 50, TextAnchor.MiddleCenter);
 
-            // Bảng kết thúc lượt
             RoundEndPanel endPanel = BuildEndPanel(canvas, pop, Hex("993556"));
 
-            // Bảng AI (chỉ hiện trong Editor / Development Build)
             MasteryDebugPanel debugPanel = BuildDebugPanel(canvas);
 
-            // Bộ điều khiển trò chơi
             SoundGameController controller = canvas.gameObject.AddComponent<SoundGameController>();
-            // Nạp lại: mở scene MainMenu ở trên khiến Unity giải phóng asset đã nạp trước đó.
             Set(controller, "database", FindByType<AnimalDatabase>());
             Set(controller, "optionsContainer", options);
             Set(controller, "optionPrefab", cardPrefab);
@@ -139,7 +123,6 @@ namespace NongTrai.EditorTools
             return $"GameSound: đã dựng lại ({scenePath}).";
         }
 
-        /// <summary>Phần chung trên đầu mỗi màn chơi: nền nông trại, nút về nhà, băng-rôn tiêu đề, hàng ngôi sao.</summary>
         internal static void BuildHeader(RectTransform canvas, string title, UiTheme.Tone tone, AudioClip pop,
             out Button home, out RoundProgressView progressView)
         {
@@ -156,7 +139,6 @@ namespace NongTrai.EditorTools
                 : MakeButton(canvas, "HomeButton", new Vector2(0, 1), new Vector2(40, -40), new Vector2(130, 130),
                     Soft, knob, homeIcon, homeIcon == null ? "Nhà" : null, 34, Ink, pop);
 
-            // Băng-rôn tiêu đề: nút lớn cùng màu với trò chơi, chữ trắng
             RectTransform banner = NewUI("TitleBanner", canvas);
             Place(banner, new Vector2(0.5f, 1), new Vector2(0, -24), new Vector2(680, 150));
             Sprite big = UiTheme.Big(tone);
@@ -167,7 +149,6 @@ namespace NongTrai.EditorTools
             prompt.offsetMax = new Vector2(-40, -10);
             AddText(prompt, title, 62, big != null ? Color.white : CoralInk);
 
-            // Hàng ngôi sao tiến độ nằm trên một khung bo góc trắng mờ
             Sprite starIcon = FindSprite("icon_star");
             RectTransform progress = NewUI("Progress", canvas);
             Place(progress, new Vector2(1, 1), new Vector2(-30, -52), new Vector2(510, 84));
@@ -183,7 +164,6 @@ namespace NongTrai.EditorTools
             Set(progressView, "dotTemplate", dotImage);
         }
 
-        /// <summary>Khung bo góc trắng mờ có chữ (lời nhắc ngắn).</summary>
         internal static TMP_Text Pill(Transform parent, string name, Vector2 anchor, Vector2 position, Vector2 size,
             string text, float fontSize, Color color)
         {
@@ -195,8 +175,6 @@ namespace NongTrai.EditorTools
             return AddText(label, text, fontSize, color);
         }
 
-        /// <summary>Mở scene đầu tiên trong Build Profiles (màn khởi động của game) rồi bấm Play.</summary>
-        [MenuItem("NongTrai/Chạy thử từ scene đầu tiên", priority = 20)]
         public static void PlayFromFirstScene()
         {
             string path = EditorBuildSettings.scenes.FirstOrDefault(s => s.enabled)?.path;
@@ -209,9 +187,6 @@ namespace NongTrai.EditorTools
             EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
             EditorApplication.isPlaying = true;
         }
-
-        // =====================================================================
-        // Các phần của màn chơi
 
         internal static OptionCardView BuildCardPrefab(AudioClip tapSound, string prefabFolder)
         {
@@ -227,7 +202,7 @@ namespace NongTrai.EditorTools
             Button button = root.AddComponent<Button>();
             button.targetGraphic = bg;
             ColorBlock colors = button.colors;
-            colors.disabledColor = Color.white; // thẻ bị khóa không bị xám đi
+            colors.disabledColor = Color.white;
             colors.highlightedColor = Hex("FFF4E0");
             button.colors = colors;
             CanvasGroup group = root.AddComponent<CanvasGroup>();
@@ -288,7 +263,6 @@ namespace NongTrai.EditorTools
 
         internal static MasteryDebugPanel BuildDebugPanel(RectTransform canvas)
         {
-            // Lớp chứa không có Image nên không chặn bấm vào game.
             RectTransform root = NewUI("AiDebug", canvas);
             Stretch(root);
 
@@ -311,7 +285,6 @@ namespace NongTrai.EditorTools
             return debug;
         }
 
-        /// <summary>Mở MainMenu, đảm bảo có một ô trò chơi trỏ tới GameSound.</summary>
         internal static string ConnectMainMenu(string path, out string profileSceneName)
         {
             profileSceneName = "ProfileSelect";
@@ -334,7 +307,6 @@ namespace NongTrai.EditorTools
                 if (games.GetArrayElementAtIndex(i).FindPropertyRelative("sceneName").stringValue == SceneName)
                     return $"ô số {i} đã trỏ tới {SceneName}, không cần sửa.";
 
-            // Chưa ô nào trỏ tới GameSound: ưu tiên ô có nút tên chứa "Sound", không có thì lấy ô đầu tiên.
             int index = 0;
             for (int i = 0; i < games.arraySize; i++)
             {
@@ -352,7 +324,6 @@ namespace NongTrai.EditorTools
             return $"đã nối ô số {index} với {SceneName}.";
         }
 
-        /// <summary>Nạp hình nền mặc định của Unity (khung bo góc, hình tròn).</summary>
         internal static void LoadSkin()
         {
             rounded = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd");
@@ -362,10 +333,6 @@ namespace NongTrai.EditorTools
         internal static Sprite Rounded => rounded;
         internal static Sprite Knob => knob;
 
-        /// <summary>
-        /// Mở MainMenu, tìm ô trò chơi có dòng chữ chứa <paramref name="label"/> (ví dụ "cái bóng")
-        /// và trỏ nó tới <paramref name="sceneName"/>. Ô chưa có trong danh sách Games thì tự thêm vào.
-        /// </summary>
         internal static string ConnectGameTile(string path, string sceneName, string label, out string profileSceneName)
         {
             profileSceneName = "ProfileSelect";
@@ -410,9 +377,6 @@ namespace NongTrai.EditorTools
 
         static string NormalizeText(string s) => (s ?? "").Normalize(NormalizationForm.FormC).ToLowerInvariant();
 
-        // =====================================================================
-        // Scene cơ bản
-
         internal static void CreateCamera()
         {
             var go = new GameObject("Main Camera");
@@ -422,13 +386,12 @@ namespace NongTrai.EditorTools
             cam.orthographic = true;
             cam.clearFlags = CameraClearFlags.SolidColor;
             cam.backgroundColor = Cream;
-            go.AddComponent<AudioListener>(); // thiếu cái này thì không nghe được gì
+            go.AddComponent<AudioListener>();
         }
 
         internal static void CreateEventSystem()
         {
             var go = new GameObject("EventSystem", typeof(EventSystem));
-            // Dùng module của Input System mới nếu project có cài, không thì dùng module cũ.
             Type inputSystemModule = Type.GetType("UnityEngine.InputSystem.UI.InputSystemUIInputModule, Unity.InputSystem");
             if (inputSystemModule != null) go.AddComponent(inputSystemModule);
             else go.AddComponent<StandaloneInputModule>();
@@ -447,9 +410,6 @@ namespace NongTrai.EditorTools
             return (RectTransform)go.transform;
         }
 
-        // =====================================================================
-        // Hàm tiện ích dựng UI
-
         internal static RectTransform NewUI(string name, Transform parent)
         {
             var go = new GameObject(name, typeof(RectTransform));
@@ -467,7 +427,6 @@ namespace NongTrai.EditorTools
             rt.offsetMax = new Vector2(-padding, -padding);
         }
 
-        /// <summary>Neo vào một điểm (0..1) của cha; pivot trùng điểm neo nên pos tính từ góc/cạnh đó.</summary>
         internal static void Place(RectTransform rt, Vector2 anchor, Vector2 position, Vector2 size)
         {
             rt.anchorMin = anchor;
@@ -512,7 +471,7 @@ namespace NongTrai.EditorTools
             t.fontSize = size;
             t.color = color;
             t.alignment = alignment;
-            if (bold && font == null) t.fontStyle = FontStyles.Bold; // Mali-Bold đã đậm sẵn
+            if (bold && font == null) t.fontStyle = FontStyles.Bold;
             t.raycastTarget = false;
             return t;
         }
@@ -543,9 +502,6 @@ namespace NongTrai.EditorTools
             Set(kid, "clickSound", clickSound);
             return button;
         }
-
-        // =====================================================================
-        // Tìm asset, nối tham chiếu, Build Profiles
 
         internal static void Set(Object target, string field, Object value)
         {
@@ -579,7 +535,6 @@ namespace NongTrai.EditorTools
             return guid == null ? null : AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GUIDToAssetPath(guid));
         }
 
-        /// <summary>Tìm asset theo ĐÚNG tên file (không tính đuôi).</summary>
         internal static T FindByName<T>(string fileName) where T : Object
         {
             foreach (string guid in AssetDatabase.FindAssets(fileName + " t:" + typeof(T).Name))
@@ -591,7 +546,6 @@ namespace NongTrai.EditorTools
             return null;
         }
 
-        /// <summary>Tìm hình theo tên; nếu hình chưa ở dạng Sprite thì tự chuyển.</summary>
         internal static Sprite FindSprite(string fileName)
         {
             foreach (string guid in AssetDatabase.FindAssets(fileName + " t:Texture2D"))

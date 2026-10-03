@@ -5,11 +5,6 @@ using UnityEngine;
 
 namespace NongTrai.Animals
 {
-    /// <summary>
-    /// Danh sách tất cả con vật trong game. Các trò chơi chỉ cần giữ tham chiếu tới file này.
-    /// Tạo bằng: chuột phải > Create > NongTrai > Animal Database.
-    /// Kiểm tra dữ liệu: bấm dấu ⋮ ở góc phải component trong Inspector > "Kiểm tra dữ liệu".
-    /// </summary>
     [CreateAssetMenu(fileName = "AnimalDatabase", menuName = "NongTrai/Animal Database", order = 2)]
     public class AnimalDatabase : ScriptableObject
     {
@@ -20,7 +15,6 @@ namespace NongTrai.Animals
         public IReadOnlyList<AnimalData> All => animals;
         public int Count => animals.Count;
 
-        /// <summary>Tìm con vật theo mã. Trả về null nếu không có.</summary>
         public AnimalData Get(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -28,7 +22,6 @@ namespace NongTrai.Animals
             return animals.FirstOrDefault(a => a != null && a.Id == id);
         }
 
-        /// <summary>Các con cùng nhóm "dễ nhầm" (không gồm chính nó). Rỗng nếu con này không thuộc nhóm nào.</summary>
         public IReadOnlyList<AnimalData> GetSimilar(AnimalData animal)
         {
             if (animal == null || string.IsNullOrEmpty(animal.SimilarGroup))
@@ -39,10 +32,6 @@ namespace NongTrai.Animals
                 .ToList();
         }
 
-        /// <summary>
-        /// Kiểm tra dữ liệu, trả về danh sách vấn đề (rỗng = dữ liệu tốt).
-        /// Có unit test gọi hàm này trên database thật, nên nhập thiếu gì test sẽ báo.
-        /// </summary>
         public List<string> Validate()
         {
             var problems = new List<string>();
@@ -71,7 +60,6 @@ namespace NongTrai.Animals
                 if (a.Food == null) problems.Add($"{a.Label}: chưa chọn thức ăn.");
             }
 
-            // Một nhóm "dễ nhầm" chỉ có 1 con thì vô nghĩa, thường là do gõ sai tên nhóm.
             IEnumerable<IGrouping<string, AnimalData>> lonelyGroups = animals
                 .Where(a => a != null && !string.IsNullOrEmpty(a.SimilarGroup))
                 .GroupBy(a => a.SimilarGroup)

@@ -2,13 +2,6 @@ using System;
 
 namespace NongTrai.Learning
 {
-    /// <summary>
-    /// Cách tính điểm thuộc bài (0..1) sau mỗi câu trả lời.
-    /// - Đúng và nhanh: tăng nhiều (35% khoảng cách còn lại tới 1).
-    /// - Đúng nhưng chậm: tăng ít (20%), vì bé còn phân vân.
-    /// - Sai: giảm 40% điểm hiện có.
-    /// Tăng theo "khoảng cách còn lại" nên điểm tiến dần tới 1 nhưng không bao giờ vượt quá.
-    /// </summary>
     public static class MasteryModel
     {
         public const float FastSeconds = 4f;

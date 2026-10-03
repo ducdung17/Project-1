@@ -8,10 +8,6 @@ using UnityEngine.UI;
 
 namespace NongTrai.MainMenu
 {
-    /// <summary>
-    /// Màn chính: hiện bé đang chơi, các ô trò chơi, nút Album và nút đổi bé.
-    /// Trò chơi nào chưa làm (scene chưa có trong Build Profiles) thì báo "sắp có" thay vì lỗi.
-    /// </summary>
     public class MainMenuScreen : MonoBehaviour
     {
         [Serializable]
@@ -52,7 +48,6 @@ namespace NongTrai.MainMenu
             ChildProfile child = ProfileManager.Current;
             if (child == null)
             {
-                // Bấm Play thẳng ở scene này (chưa chọn bé) -> quay về màn chọn hồ sơ.
                 Debug.Log("[MainMenu] Chưa chọn bé, chuyển về màn chọn hồ sơ.");
                 LoadProfileScene();
                 return;
@@ -63,7 +58,7 @@ namespace NongTrai.MainMenu
             foreach (GameEntry entry in games)
             {
                 if (entry.button == null) continue;
-                string scene = entry.sceneName; // sao chép ra biến riêng để lambda giữ đúng giá trị
+                string scene = entry.sceneName;
                 entry.button.onClick.AddListener(() => OpenScene(scene));
             }
 
@@ -101,7 +96,6 @@ namespace NongTrai.MainMenu
 
         void OpenScene(string sceneName)
         {
-            // CanStreamedLevelBeLoaded = scene có trong Build Profiles hay chưa.
             if (string.IsNullOrEmpty(sceneName) || !Application.CanStreamedLevelBeLoaded(sceneName))
             {
                 ShowToast(ComingSoonMessage);

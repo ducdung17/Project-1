@@ -2,10 +2,6 @@ using UnityEngine;
 
 namespace NongTrai.UI
 {
-    /// <summary>
-    /// Phát âm thanh giao diện từ bất kỳ đâu: UiAudio.Play(clip), UiAudio.PlayVoice(clip).
-    /// Tự tạo một GameObject chứa 2 AudioSource ở lần gọi đầu tiên và giữ nó qua các scene.
-    /// </summary>
     public static class UiAudio
     {
         static AudioSource sfxSource;
@@ -13,7 +9,6 @@ namespace NongTrai.UI
 
         static void EnsureCreated()
         {
-            // So sánh "!= null" của Unity cũng đúng với object đã bị hủy.
             if (sfxSource != null && voiceSource != null)
                 return;
 
@@ -25,7 +20,6 @@ namespace NongTrai.UI
             voiceSource.playOnAwake = false;
         }
 
-        /// <summary>Hiệu ứng ngắn (tiếng "bụp" khi bấm). Có thể chồng lên nhau.</summary>
         public static void Play(AudioClip clip)
         {
             if (clip == null) return;
@@ -33,7 +27,6 @@ namespace NongTrai.UI
             sfxSource.PlayOneShot(clip);
         }
 
-        /// <summary>Giọng đọc. Câu mới cắt câu cũ, để hai câu không nói đè lên nhau.</summary>
         public static void PlayVoice(AudioClip clip)
         {
             if (clip == null) return;

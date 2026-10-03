@@ -6,12 +6,6 @@ using UnityEngine.UI;
 
 namespace NongTrai.Profiles.UI
 {
-    /// <summary>
-    /// Màn "Ai đang chơi nào?".
-    /// - Chế độ bình thường: bé bấm thẻ của mình -> vào màn chính.
-    /// - Nút khóa (qua cổng phụ huynh) -> chế độ quản lý: hiện nút xóa trên từng thẻ.
-    /// - Thẻ "Thêm bé" (qua cổng phụ huynh) -> hộp thoại thêm hồ sơ.
-    /// </summary>
     public class ProfileSelectScreen : MonoBehaviour
     {
         [Header("Danh sách thẻ")]
@@ -59,7 +53,6 @@ namespace NongTrai.Profiles.UI
 
             Service.ProfilesChanged += Refresh;
 
-            // Nhớ bé chơi lần trước để đánh dấu, rồi bỏ chọn: mỗi lần mở game bé phải tự chọn lại.
             lastPlayedId = Service.SelectedProfile?.Id;
             Service.ClearSelection();
 
@@ -68,7 +61,6 @@ namespace NongTrai.Profiles.UI
 
         void OnDestroy()
         {
-            // ProfileManager sống qua nhiều scene, nên phải hủy đăng ký để tránh gọi vào object đã bị hủy.
             if (ProfileManager.Instance != null && ProfileManager.Instance.Service != null)
                 ProfileManager.Instance.Service.ProfilesChanged -= Refresh;
         }
@@ -100,7 +92,6 @@ namespace NongTrai.Profiles.UI
                 cards.Add(card);
             }
 
-            // Thẻ "Thêm bé" luôn ở cuối và ẩn khi đã đủ số hồ sơ tối đa.
             addCardButton.gameObject.SetActive(Service.CanAddMore);
             addCardButton.transform.SetAsLastSibling();
 
@@ -109,29 +100,22 @@ namespace NongTrai.Profiles.UI
             else
                 titleText.text = Service.Count == 0 ? EmptyTitle : NormalTitle;
 
-            // Chưa có hồ sơ thì chưa cần nút quản lý.
             manageButton.gameObject.SetActive(!manageMode && Service.Count > 0);
         }
-
-        // ---------------------------------------------------------------- Chọn
 
         void OnCardClicked(ChildProfile profile)
         {
             if (manageMode)
-                return; // Đang quản lý thì bấm thẻ không vào game, tránh vô tình rời màn.
+                return;
 
             if (Service.Select(profile.Id) == ProfileResult.Success)
                 SceneManager.LoadScene(mainMenuScene);
         }
 
-        // ---------------------------------------------------------------- Thêm
-
         void OnAddClicked()
         {
             RequireParent(() => addDialog.Open(Service, Avatars));
         }
-
-        // ---------------------------------------------------------------- Xóa
 
         void OnDeleteClicked(ChildProfile profile)
         {
@@ -140,16 +124,12 @@ namespace NongTrai.Profiles.UI
                 () =>
                 {
                     Service.Remove(profile.Id);
-                    // Xóa luôn tiến độ học của bé, đúng như hộp thoại đã báo.
                     new NongTrai.Learning.PlayerPrefsProgressStorage().Delete(profile.Id);
                     if (profile.Id == lastPlayedId)
                         lastPlayedId = null;
                 });
         }
 
-        // ---------------------------------------------------------------- Cổng phụ huynh
-
-        /// <summary>Ở chế độ quản lý thì phụ huynh đã qua cổng rồi, không hỏi lại.</summary>
         void RequireParent(System.Action action)
         {
             if (manageMode)

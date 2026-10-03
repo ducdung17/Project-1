@@ -5,7 +5,6 @@ using NongTrai.Animals;
 
 namespace NongTrai.Learning
 {
-    /// <summary>Một câu hỏi: con vật đúng + các lựa chọn (đã xáo trộn, gồm cả con đúng).</summary>
     public class Question
     {
         public AnimalData Target { get; }
@@ -20,10 +19,6 @@ namespace NongTrai.Learning
         }
     }
 
-    /// <summary>
-    /// Hệ thống học thích ứng cho MỘT bé: chọn câu hỏi, ghi nhận câu trả lời, lưu tiến độ.
-    /// Các trò chơi chỉ cần gọi NextQuestion() và RecordAnswer().
-    /// </summary>
     public class LearningService
     {
         readonly AnimalDatabase database;
@@ -32,7 +27,6 @@ namespace NongTrai.Learning
         readonly LearningProgress progress;
         string lastTargetId;
 
-        /// <summary>Tiến độ thay đổi (sau mỗi câu trả lời được tính điểm).</summary>
         public event Action Changed;
 
         public LearningService(AnimalDatabase database, string childId, IProgressStorage storage, Random rng = null)
@@ -63,10 +57,6 @@ namespace NongTrai.Learning
 
         string GroupOf(string id) => database.Get(id)?.SimilarGroup;
 
-        /// <summary>
-        /// Tạo câu hỏi tiếp theo.
-        /// isAllowedDistractor: (không bắt buộc) luật riêng của từng trò, nhận (con đúng, con nhiễu) và trả về có dùng được không.
-        /// </summary>
         public Question NextQuestion(Func<AnimalData, AnimalData, bool> isAllowedDistractor = null)
         {
             List<string> ids = AnimalIds();
@@ -90,11 +80,6 @@ namespace NongTrai.Learning
             return new Question(target, options, progress.level);
         }
 
-        /// <summary>
-        /// Ghi nhận bé chọn con nào. Chỉ LẦN CHỌN ĐẦU TIÊN của mỗi câu được tính vào điểm thuộc bài và độ khó;
-        /// các lần chọn lại sau khi sai chỉ để bé tìm ra đáp án, không bị trừ thêm.
-        /// Trả về true nếu chọn đúng.
-        /// </summary>
         public bool RecordAnswer(Question question, string chosenId, float responseSeconds, bool firstTry)
         {
             if (question == null) throw new ArgumentNullException(nameof(question));

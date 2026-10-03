@@ -4,19 +4,10 @@ using System.Linq;
 
 namespace NongTrai.Learning
 {
-    /// <summary>
-    /// Chọn câu hỏi và đáp án gây nhiễu. Làm việc trên Id (chuỗi) nên test được không cần Unity.
-    /// </summary>
     public static class QuestionPicker
     {
-        /// <summary>Trọng số tối thiểu: con đã thuộc vẫn thỉnh thoảng được hỏi lại để ôn.</summary>
         public const double MinWeight = 0.1;
 
-        /// <summary>
-        /// Chọn con vật để hỏi bằng random có trọng số: trọng số = (1 - điểm thuộc) + 0.1.
-        /// Con chưa thuộc (điểm 0) có trọng số 1.1, con đã thuộc hẳn (điểm 1) chỉ 0.1, tức ít gặp hơn 11 lần.
-        /// Không hỏi lại đúng con vừa hỏi (trừ khi chỉ có 1 con).
-        /// </summary>
         public static string PickTarget(IReadOnlyList<string> ids, Func<string, float> scoreOf, string lastId, Random rng)
         {
             if (ids == null || ids.Count == 0)
@@ -35,11 +26,6 @@ namespace NongTrai.Learning
             return candidates[candidates.Count - 1];
         }
 
-        /// <summary>
-        /// Chọn đáp án gây nhiễu (không trùng nhau, không gồm con đúng).
-        /// preferSimilar = true: lấy các con cùng nhóm "dễ nhầm" trước (gà thì nhiễu bằng vịt).
-        /// isAllowed: loại bớt con không hợp lệ (ví dụ trò "Cho bạn ăn": bỏ con ăn cùng thức ăn với con đúng).
-        /// </summary>
         public static List<string> PickDistractors(
             string targetId,
             IReadOnlyList<string> ids,
@@ -77,7 +63,6 @@ namespace NongTrai.Learning
             return result;
         }
 
-        /// <summary>Xáo trộn Fisher–Yates, trả về danh sách mới.</summary>
         public static List<T> Shuffle<T>(IEnumerable<T> source, Random rng)
         {
             List<T> list = source.ToList();

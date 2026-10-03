@@ -17,11 +17,6 @@ namespace NongTrai.Profiles
         NotFound
     }
 
-    /// <summary>
-    /// Toàn bộ logic thêm / xóa / chọn hồ sơ.
-    /// Là class C# thuần, không phụ thuộc UnityEngine, nên test được bằng EditMode test
-    /// mà không cần mở scene.
-    /// </summary>
     public class ProfileService
     {
         public const int MaxProfiles = 6;
@@ -33,10 +28,8 @@ namespace NongTrai.Profiles
         readonly Func<DateTime> clock;
         readonly ProfileData data;
 
-        /// <summary>Danh sách hồ sơ thay đổi (thêm hoặc xóa).</summary>
         public event Action ProfilesChanged;
 
-        /// <summary>Một hồ sơ vừa được chọn (null nếu bỏ chọn).</summary>
         public event Action<ChildProfile> SelectionChanged;
 
         public ProfileService(
@@ -57,7 +50,6 @@ namespace NongTrai.Profiles
             if (data.profiles == null)
                 data.profiles = new List<ChildProfile>();
 
-            // Hồ sơ đang chọn có thể đã bị xóa ở phiên trước (hoặc dữ liệu hỏng) -> bỏ chọn.
             if (data.selectedProfileId != null && Find(data.selectedProfileId) == null)
             {
                 data.selectedProfileId = null;
@@ -79,8 +71,6 @@ namespace NongTrai.Profiles
 
         public bool IsAvatarTaken(int avatarId) => data.profiles.Any(p => p.avatarId == avatarId);
 
-        // ---------------------------------------------------------------- Thêm
-
         public ProfileResult Add(string nickname, int avatarId, out ChildProfile created)
         {
             created = null;
@@ -97,7 +87,6 @@ namespace NongTrai.Profiles
 
         public ProfileResult Add(string nickname, int avatarId) => Add(nickname, avatarId, out _);
 
-        /// <summary>Kiểm tra dữ liệu trước khi thêm. UI có thể gọi để báo lỗi ngay khi bé/phụ huynh nhập.</summary>
         public ProfileResult ValidateNew(string nickname, int avatarId, out string cleanName)
         {
             cleanName = NormalizeName(nickname);
@@ -115,14 +104,11 @@ namespace NongTrai.Profiles
 
             if (avatarId < 0 || avatarId >= avatarCount)
                 return ProfileResult.InvalidAvatar;
-            // Mỗi bé một con vật riêng: trẻ chưa biết đọc nhận ra hồ sơ của mình qua con vật.
             if (IsAvatarTaken(avatarId))
                 return ProfileResult.AvatarTaken;
 
             return ProfileResult.Success;
         }
-
-        // ---------------------------------------------------------------- Xóa
 
         public ProfileResult Remove(string id)
         {
@@ -142,8 +128,6 @@ namespace NongTrai.Profiles
                 SelectionChanged?.Invoke(null);
             return ProfileResult.Success;
         }
-
-        // ---------------------------------------------------------------- Chọn
 
         public ProfileResult Select(string id)
         {
@@ -166,12 +150,6 @@ namespace NongTrai.Profiles
             SelectionChanged?.Invoke(null);
         }
 
-        // ---------------------------------------------------------------- Tiện ích
-
-        /// <summary>
-        /// Chuẩn hóa tên: bỏ khoảng trắng thừa, gộp nhiều dấu cách thành một,
-        /// và chuẩn hóa Unicode (NFC) để "Bé" gõ bằng Telex/VNI khác nhau vẫn được coi là cùng một tên.
-        /// </summary>
         public static string NormalizeName(string raw)
         {
             if (string.IsNullOrWhiteSpace(raw))

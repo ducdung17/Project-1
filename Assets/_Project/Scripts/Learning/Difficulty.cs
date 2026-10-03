@@ -2,12 +2,6 @@ using System.Linq;
 
 namespace NongTrai.Learning
 {
-    /// <summary>
-    /// Tự điều chỉnh độ khó theo 6 câu gần nhất:
-    /// - Đúng ngay từ lần đầu ≥ 80% (5/6 câu) -> lên mức.
-    /// - ≤ 50% (3/6 câu trở xuống) -> xuống mức.
-    /// Mức 1: 2 lựa chọn. Mức 2: 3 lựa chọn. Mức 3: 4 lựa chọn, đáp án nhiễu là con vật dễ nhầm.
-    /// </summary>
     public static class Difficulty
     {
         public const int MinLevel = 1;
@@ -22,7 +16,6 @@ namespace NongTrai.Learning
 
         public static int Clamp(int level) => level < MinLevel ? MinLevel : (level > MaxLevel ? MaxLevel : level);
 
-        /// <summary>Ghi nhận một câu trả lời (chỉ lần chọn đầu tiên) và đổi mức nếu cần. Trả về true nếu mức thay đổi.</summary>
         public static bool Register(LearningProgress progress, bool correctFirstTry)
         {
             progress.level = Clamp(progress.level);
@@ -37,7 +30,7 @@ namespace NongTrai.Learning
             if (accuracy >= LevelUpAccuracy && progress.level < MaxLevel)
             {
                 progress.level++;
-                progress.recent.Clear(); // bắt đầu đếm lại ở mức mới
+                progress.recent.Clear();
                 return true;
             }
             if (accuracy <= LevelDownAccuracy && progress.level > MinLevel)

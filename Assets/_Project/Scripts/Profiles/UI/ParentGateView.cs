@@ -5,10 +5,6 @@ using UnityEngine.UI;
 
 namespace NongTrai.Profiles.UI
 {
-    /// <summary>
-    /// Cổng phụ huynh: hiện một phép cộng với vài đáp án.
-    /// Đúng thì chạy hành động được bảo vệ; sai thì đóng lại (không gợi ý đáp án, để bé không đoán mò).
-    /// </summary>
     public class ParentGateView : MonoBehaviour
     {
         [SerializeField] TMP_Text questionText;

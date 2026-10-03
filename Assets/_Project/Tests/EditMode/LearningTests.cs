@@ -9,7 +9,6 @@ using Random = System.Random;
 
 namespace NongTrai.Tests.EditMode
 {
-    /// <summary>Lưu tiến độ trong RAM cho test (qua JSON để giống lưu thật).</summary>
     public class InMemoryProgressStorage : IProgressStorage
     {
         readonly Dictionary<string, string> data = new Dictionary<string, string>();
@@ -27,7 +26,6 @@ namespace NongTrai.Tests.EditMode
         public void Delete(string childId) => data.Remove(childId);
     }
 
-    // =====================================================================
     public class MasteryModelTests
     {
         [Test]
@@ -63,8 +61,6 @@ namespace NongTrai.Tests.EditMode
         [Test]
         public void FourFastCorrectAnswers_FromZero_ReachMastered()
         {
-            // Nói được khi trình bày: điểm sau n lần đúng nhanh = 1 - 0.65^n.
-            // 3 lần = 0.73 (chưa thuộc), 4 lần = 0.82 (thuộc).
             float s = 0f;
             for (int i = 0; i < 3; i++) s = MasteryModel.Update(s, true, 1f);
             Assert.IsFalse(MasteryModel.IsMastered(s), "3 lần chưa đủ");
@@ -73,7 +69,6 @@ namespace NongTrai.Tests.EditMode
         }
     }
 
-    // =====================================================================
     public class DifficultyTests
     {
         static LearningProgress Progress(int level) => new LearningProgress { childId = "c", level = level };
@@ -111,7 +106,7 @@ namespace NongTrai.Tests.EditMode
         public void MixedResults_KeepLevel()
         {
             LearningProgress p = Progress(2);
-            foreach (bool r in new[] { true, true, false, true, true, false }) // 4/6 = 67%
+            foreach (bool r in new[] { true, true, false, true, true, false })
                 Difficulty.Register(p, r);
 
             Assert.AreEqual(2, p.level);
@@ -137,7 +132,6 @@ namespace NongTrai.Tests.EditMode
         }
     }
 
-    // =====================================================================
     public class QuestionPickerTests
     {
         static readonly string[] Ids = { "cat", "dog", "chicken", "duck", "pig", "cow" };
@@ -165,7 +159,6 @@ namespace NongTrai.Tests.EditMode
         [Test]
         public void PickTarget_PrefersAnimalsNotYetLearned()
         {
-            // "cat" chưa thuộc (0), các con khác đã thuộc hẳn (1).
             var rng = new Random(42);
             int catCount = 0;
             const int draws = 2000;
@@ -173,7 +166,6 @@ namespace NongTrai.Tests.EditMode
                 if (QuestionPicker.PickTarget(Ids, id => id == "cat" ? 0f : 1f, null, rng) == "cat")
                     catCount++;
 
-            // Kỳ vọng: 1.1 / (1.1 + 5 x 0.1) ≈ 69%. Ngẫu nhiên đều chỉ là 17%.
             Assert.Greater(catCount, draws * 0.6);
         }
 
@@ -227,7 +219,6 @@ namespace NongTrai.Tests.EditMode
         }
     }
 
-    // =====================================================================
     public class LearningServiceTests
     {
         readonly List<UnityEngine.Object> created = new List<UnityEngine.Object>();

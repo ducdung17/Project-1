@@ -13,16 +13,10 @@ using B = NongTrai.EditorTools.SoundGameBuilder;
 
 namespace NongTrai.EditorTools
 {
-    /// <summary>
-    /// Menu NongTrai > Thêm nút về màn hình chính: đặt nút ngôi nhà ở góc dưới trái
-    /// màn chọn hồ sơ và màn chọn trò chơi, bấm vào sẽ về scene đầu tiên (màn Start).
-    /// Chạy lại nhiều lần không bị nhân đôi nút.
-    /// </summary>
     public static class HomeButtonInstaller
     {
         const string ButtonName = "BackToStart";
 
-        [MenuItem("NongTrai/Thêm nút về màn hình chính", priority = 41)]
         public static void Install()
         {
             string startPath = EditorBuildSettings.scenes.FirstOrDefault(s => s.enabled)?.path;
@@ -42,7 +36,7 @@ namespace NongTrai.EditorTools
                 Scene scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
                 Component screen = (Component)Object.FindObjectsByType<ProfileSelectScreen>(FindObjectsInactive.Include).FirstOrDefault()
                                    ?? Object.FindObjectsByType<MainMenuScreen>(FindObjectsInactive.Include).FirstOrDefault();
-                if (screen == null) continue; // không phải màn hồ sơ / màn chọn trò chơi
+                if (screen == null) continue;
 
                 Canvas canvas = screen.GetComponentInParent<Canvas>(true);
                 if (canvas == null) canvas = Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include).FirstOrDefault(c => c.isRootCanvas);
@@ -53,7 +47,6 @@ namespace NongTrai.EditorTools
                 }
                 RectTransform root = (RectTransform)canvas.rootCanvas.transform;
 
-                // Xóa nút cũ (nếu chạy lại) rồi tạo mới
                 Transform old = root.Find(ButtonName);
                 if (old != null) Object.DestroyImmediate(old.gameObject);
 
@@ -67,7 +60,6 @@ namespace NongTrai.EditorTools
                     : B.MakeButton(root, ButtonName, Vector2.zero, new Vector2(36, 30), new Vector2(130, 130),
                         B.Soft, B.Knob, homeIcon, homeIcon == null ? "Về" : null, 34, B.Ink, pop);
 
-                // Đặt ngay sau lớp nền để các hộp thoại (thêm hồ sơ, cổng phụ huynh...) vẫn che lên trên nút.
                 int index = 0;
                 for (int i = 0; i < root.childCount; i++)
                 {

@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 namespace NongTrai.Profiles.UI
 {
-    /// <summary>Hộp thoại xác nhận dùng chung (ví dụ: xác nhận xóa hồ sơ).</summary>
     public class ConfirmDialog : MonoBehaviour
     {
         [SerializeField] TMP_Text messageText;

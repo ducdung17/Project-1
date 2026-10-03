@@ -4,12 +4,6 @@ using UnityEngine;
 
 namespace NongTrai.Profiles
 {
-    /// <summary>
-    /// Danh sách con vật dùng làm avatar hồ sơ.
-    /// Tạo bằng: chuột phải trong Project > Create > NongTrai > Avatar Catalog.
-    /// LƯU Ý: avatarId chính là vị trí trong danh sách, nên chỉ THÊM vào cuối,
-    /// không xóa hay đổi thứ tự, nếu không hồ sơ cũ sẽ hiển thị sai con vật.
-    /// </summary>
     [CreateAssetMenu(fileName = "AvatarCatalog", menuName = "NongTrai/Avatar Catalog")]
     public class AvatarCatalog : ScriptableObject
     {

@@ -4,19 +4,12 @@ namespace NongTrai.Animals
 {
     public enum Habitat
     {
-        Farm,   // Nông trại
-        Home,   // Trong nhà
-        Forest, // Rừng
-        Water   // Dưới nước
+        Farm,
+        Home,
+        Forest,
+        Water
     }
 
-    /// <summary>
-    /// Toàn bộ thông tin về một con vật. Cả 3 trò chơi và hệ thống học thích ứng đều đọc từ đây.
-    /// Tạo bằng: chuột phải > Create > NongTrai > Animal Data.
-    ///
-    /// Hình bóng đen (trò "Tìm cái bóng") KHÔNG cần file riêng: trò chơi dùng chính sprite này
-    /// với Image.color = đen. Sprite phải có nền trong suốt (PNG) thì bóng mới đúng hình.
-    /// </summary>
     [CreateAssetMenu(fileName = "Animal_", menuName = "NongTrai/Animal Data", order = 0)]
     public class AnimalData : ScriptableObject
     {
@@ -54,7 +47,6 @@ namespace NongTrai.Animals
         public Habitat Habitat => habitat;
         public string SimilarGroup => similarGroup;
 
-        /// <summary>Tên dùng trong thông báo lỗi: "Mèo (cat)".</summary>
         public string Label => string.IsNullOrEmpty(nameVi) ? (string.IsNullOrEmpty(id) ? name : id) : $"{nameVi} ({id})";
 
         internal void InitForTests(string animalId, string vi, string group = null, FoodData foodData = null)

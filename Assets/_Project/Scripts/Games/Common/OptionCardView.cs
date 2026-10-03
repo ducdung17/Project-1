@@ -7,10 +7,6 @@ using UnityEngine.UI;
 
 namespace NongTrai.Games
 {
-    /// <summary>
-    /// Một thẻ đáp án (hình con vật) dùng chung cho các trò chơi.
-    /// Có sẵn hiệu ứng: nảy khi đúng, lắc và mờ đi khi sai, lắc lư nhẹ để gợi ý.
-    /// </summary>
     public class OptionCardView : MonoBehaviour
     {
         [SerializeField] Button button;
@@ -51,22 +47,18 @@ namespace NongTrai.Games
 
         public void SetInteractable(bool value) => button.interactable = value;
 
-        /// <summary>Bật = tô đen hình con vật thành cái bóng (trò "Tìm cái bóng"); tắt = hiện màu thật.</summary>
         public void SetSilhouette(bool on) => icon.color = on ? Color.black : Color.white;
 
         public RectTransform Rect => (RectTransform)transform;
 
-        /// <summary>Đúng: nảy lên 2 lần.</summary>
         public void PlayCorrect() => Run(Bounce());
 
-        /// <summary>Sai: lắc ngang rồi mờ đi, không bấm lại được.</summary>
         public void PlayWrong()
         {
             button.interactable = false;
             Run(Shake());
         }
 
-        /// <summary>Gợi ý: lắc lư nhẹ liên tục cho tới khi gọi StopEffect().</summary>
         public void StartHint() => Run(Wiggle());
 
         public void StopEffect()

@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace NongTrai.Learning
 {
-    /// <summary>Lưu tiến độ học của từng bé dạng JSON trong PlayerPrefs (chạy được cả PC và WebGL).</summary>
     public class PlayerPrefsProgressStorage : IProgressStorage
     {
         public const string KeyPrefix = "nongtrai.progress.v1.";

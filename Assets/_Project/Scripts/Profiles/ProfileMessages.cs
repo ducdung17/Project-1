@@ -1,6 +1,5 @@
 namespace NongTrai.Profiles
 {
-    /// <summary>Câu thông báo tiếng Việt cho từng kết quả. Để riêng một chỗ cho dễ dịch sang tiếng Anh sau này.</summary>
     public static class ProfileMessages
     {
         public static string For(ProfileResult result)

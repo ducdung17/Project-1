@@ -4,12 +4,6 @@ using UnityEngine.UI;
 
 namespace NongTrai.UI
 {
-    /// <summary>
-    /// Gắn thêm vào bất kỳ Button nào để nút "sống động" cho trẻ em:
-    /// - Rê chuột vào: nút phóng to nhẹ và đọc tên nút (bé chưa biết chữ vẫn biết nút làm gì).
-    /// - Nhấn xuống: nút lún xuống; thả ra: nảy lại và phát tiếng "bụp".
-    /// Không cần code gì thêm, chỉ Add Component và kéo âm thanh vào.
-    /// </summary>
     [RequireComponent(typeof(Button))]
     public class KidButton : MonoBehaviour,
         IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
@@ -39,7 +33,6 @@ namespace NongTrai.UI
 
         void OnEnable()
         {
-            // Panel bị tắt khi đang rê chuột thì lần bật lại nút không bị kẹt ở kích thước to.
             hovered = false;
             targetScale = 1f;
             if (baseScale != Vector3.zero)
@@ -52,7 +45,6 @@ namespace NongTrai.UI
             if (transform.localScale == target)
                 return;
 
-            // Dùng unscaledDeltaTime để nút vẫn nảy khi game tạm dừng (Time.timeScale = 0).
             float t = 1f - Mathf.Exp(-speed * Time.unscaledDeltaTime);
             transform.localScale = Vector3.Lerp(transform.localScale, target, t);
         }

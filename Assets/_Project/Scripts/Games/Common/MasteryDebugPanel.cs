@@ -8,10 +8,6 @@ using UnityEngine.UI;
 
 namespace NongTrai.Games
 {
-    /// <summary>
-    /// Bảng "AI đang nghĩ gì" để demo: mức độ khó, kết quả gần đây và điểm thuộc bài từng con vật.
-    /// Nút bật/tắt chỉ hiện trong Editor và bản Development Build, phụ huynh và bé không thấy.
-    /// </summary>
     public class MasteryDebugPanel : MonoBehaviour
     {
         [SerializeField] GameObject panel;
@@ -70,6 +66,8 @@ namespace NongTrai.Games
                 string mark = MasteryModel.IsMastered(s) ? " <color=#97C459>thuộc</color>" : "";
                 sb.AppendLine($"{a.NameVi,-6} [{bar}] {Mathf.RoundToInt(s * 100),3}%{mark}");
             }
+            sb.AppendLine();
+            sb.AppendLine($"Server: {NongTrai.Online.ProgressUploader.LastStatus} · chờ gửi: {NongTrai.Online.ProgressUploader.PendingCount}");
             text.text = sb.ToString();
         }
     }
