@@ -74,4 +74,3 @@ CREATE TABLE dbo.Masteries (
 );
 GO
 
-PRINT N'Đã tạo xong database NongTrai.';

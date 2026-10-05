@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using NongTrai.Api.Data;
 using NongTrai.Api.Endpoints;
 using NongTrai.Api.Services;
@@ -25,7 +26,7 @@ using (IServiceScope scope = app.Services.CreateScope())
 {
     AppDbContext db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.EnsureCreated();
-    app.Logger.LogInformation("Database: {Provider}", DatabaseSetup.ProviderName(app.Configuration));
+    app.Logger.LogInformation("Database: SQL Server ({Database})", db.Database.GetDbConnection().Database);
 }
 
 app.UseCors();

@@ -2,24 +2,39 @@ using System.Net;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Data.Sqlite;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using NongTrai.Api.Contracts;
+using NongTrai.Api.Data;
 using Xunit;
 
 namespace NongTrai.Api.Tests;
 
+// Mỗi test chạy trên một database SQL Server tạm (NongTrai_Test_<guid>), xóa khi test xong.
+// Đổi server bằng biến môi trường NONGTRAI_TEST_SQLSERVER nếu không dùng localhost.
 public sealed class TestApi : WebApplicationFactory<Program>
 {
     public const string Key = "test-key";
-    readonly string dbPath = Path.Combine(Path.GetTempPath(), $"nongtrai-test-{Guid.NewGuid():N}.db");
+    readonly string connectionString;
+
+    public TestApi()
+    {
+        string server = Environment.GetEnvironmentVariable("NONGTRAI_TEST_SQLSERVER")
+            ?? "Server=localhost;Trusted_Connection=True;TrustServerCertificate=True";
+        connectionString = new SqlConnectionStringBuilder(server)
+        {
+            InitialCatalog = $"NongTrai_Test_{Guid.NewGuid():N}",
+            MultipleActiveResultSets = true,
+        }.ConnectionString;
+    }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureAppConfiguration((_, config) => config.AddInMemoryCollection(new Dictionary<string, string?>
         {
-            ["Database:Provider"] = "Sqlite",
-            ["ConnectionStrings:Sqlite"] = $"Data Source={dbPath}",
+            ["ConnectionStrings:SqlServer"] = connectionString,
             ["Upload:ApiKey"] = Key,
         }));
     }
@@ -31,11 +46,19 @@ public sealed class TestApi : WebApplicationFactory<Program>
         return client;
     }
 
+    bool databaseDropped;
+
+    // WebApplicationFactory gọi Dispose(true) hai lần (lần 2 từ DisposeAsync, khi service đã bị hủy),
+    // nên chỉ xóa database ở lần đầu.
     protected override void Dispose(bool disposing)
     {
+        if (disposing && !databaseDropped)
+        {
+            databaseDropped = true;
+            using IServiceScope scope = Services.CreateScope();
+            scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.EnsureDeleted();
+        }
         base.Dispose(disposing);
-        SqliteConnection.ClearAllPools();
-        if (File.Exists(dbPath)) File.Delete(dbPath);
     }
 }
 
